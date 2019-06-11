@@ -18,8 +18,8 @@ public class MainWindow extends JFrame
         setTitle("Flappy Bird");
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setLocationRelativeTo(null);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         setVisible(true);
 
     }
