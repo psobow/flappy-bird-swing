@@ -15,12 +15,13 @@ public class MainWindow extends JFrame
         FRAME_WIDTH = dimension.width / 2;
         FRAME_HEIGHT = dimension.height / 2;
 
+        add(RenderPanel.getInstance());
+
         setTitle("Flappy Bird");
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-
     }
 }
