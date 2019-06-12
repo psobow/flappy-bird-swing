@@ -1,37 +1,23 @@
 package sobow.flappybirdgame;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+
 import javax.swing.JFrame;
 
 public class MainWindow extends JFrame
 {
-    private final int FRAME_WIDTH;
-    private final int FRAME_HEIGHT;
+    private final WindowSettings WINDOW_SETTINGS = WindowSettings.getInstance();
+    private final RenderPanel RENDER_PANEL = RenderPanel.getInstance();
 
     public MainWindow()
     {
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        FRAME_WIDTH = dimension.width / 2;
-        FRAME_HEIGHT = dimension.height / 2;
-
-        add(RenderPanel.getInstance());
-
+        add(RENDER_PANEL);
         setTitle("Flappy Bird");
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        setSize(WINDOW_SETTINGS.getWINDOW_WIDTH(), WINDOW_SETTINGS.getWINDOW_HEIGHT());
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 
-    public int getFRAME_WIDTH()
-    {
-        return FRAME_WIDTH;
-    }
 
-    public int getFRAME_HEIGHT()
-    {
-        return FRAME_HEIGHT;
-    }
 }

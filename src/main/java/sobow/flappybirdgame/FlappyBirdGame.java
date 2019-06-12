@@ -10,18 +10,20 @@ import javax.swing.Timer;
 public class FlappyBirdGame implements ActionListener
 {
     private static FlappyBirdGame instance;
-    private MainWindow mainWindow;
     private RenderPanel renderPanelInstance;
+
     private Timer timer = new Timer(20, this);
     private Bird bird = Bird.getInstance();
+    private WindowSettings windowSettings = WindowSettings.getInstance();
+
+    private final int GROUND_HEIGHT = windowSettings.getWINDOW_HEIGHT() / 6;
+    private final int GRASS_HEIGHT = windowSettings.getWINDOW_HEIGHT() / 50;
+    private final int DISTANCE_BETWEEN_TOP_AND_GROUND = windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT;
+
 
     private FlappyBirdGame()
     {
-        EventQueue.invokeLater(() ->
-                               {
-                                   mainWindow = new MainWindow();
-                               });
-
+        EventQueue.invokeLater(MainWindow::new);
         timer.start();
     }
 
@@ -47,10 +49,22 @@ public class FlappyBirdGame implements ActionListener
 
     public void repaint(Graphics g)
     {
+        // Paint background
         g.setColor(Color.GRAY);
         g.fillRect(0,0,
-                   mainWindow.getFRAME_WIDTH(), mainWindow.getFRAME_HEIGHT());
+                   windowSettings.getWINDOW_WIDTH(), windowSettings.getWINDOW_HEIGHT());
 
+        // Paint ground
+        g.setColor(Color.ORANGE);
+        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND,
+                   windowSettings.getWINDOW_WIDTH(), GROUND_HEIGHT);
+
+        // Paint grass
+        g.setColor(Color.GREEN);
+        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND,
+                   windowSettings.getWINDOW_WIDTH(), GRASS_HEIGHT);
+
+        // Paint bird
         g.setColor(Color.black);
         g.fillRect(bird.x, bird.y,
                    bird.width, bird.height);
