@@ -24,4 +24,14 @@ public class MainWindow extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
+
+    public int getFRAME_WIDTH()
+    {
+        return FRAME_WIDTH;
+    }
+
+    public int getFRAME_HEIGHT()
+    {
+        return FRAME_HEIGHT;
+    }
 }

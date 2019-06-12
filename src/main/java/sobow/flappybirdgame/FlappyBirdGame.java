@@ -1,5 +1,6 @@
 package sobow.flappybirdgame;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -9,10 +10,17 @@ import javax.swing.Timer;
 public class FlappyBirdGame implements ActionListener
 {
     private static FlappyBirdGame instance;
+    private MainWindow mainWindow;
+    private RenderPanel renderPanelInstance;
+    private Timer timer = new Timer(20, this);
+    private Bird bird = Bird.getInstance();
 
     private FlappyBirdGame()
     {
-        EventQueue.invokeLater(MainWindow::new);
+        EventQueue.invokeLater(() ->
+                               {
+                                   mainWindow = new MainWindow();
+                               });
 
         timer.start();
     }
@@ -29,17 +37,23 @@ public class FlappyBirdGame implements ActionListener
                 }
             }
         }
-        return instance;
+        synchronized (FlappyBirdGame.class)
+        {
+            return instance;
+        }
     }
 
 
 
-    private RenderPanel renderPanelInstance;
-    private Timer timer = new Timer(20, this);
-
     public void repaint(Graphics g)
     {
-        System.out.println("Witam");
+        g.setColor(Color.GRAY);
+        g.fillRect(0,0,
+                   mainWindow.getFRAME_WIDTH(), mainWindow.getFRAME_HEIGHT());
+
+        g.setColor(Color.black);
+        g.fillRect(bird.x, bird.y,
+                   bird.width, bird.height);
     }
 
     @Override
@@ -47,6 +61,7 @@ public class FlappyBirdGame implements ActionListener
     {
         renderPanelInstance.repaint();
     }
+
 
     public void setRenderPanelInstance(RenderPanel renderPanelInstance)
     {

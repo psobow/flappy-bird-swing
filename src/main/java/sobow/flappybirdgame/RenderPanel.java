@@ -23,7 +23,10 @@ public class RenderPanel extends JPanel
                 }
             }
         }
-        return instance;
+        synchronized (RenderPanel.class)
+        {
+            return instance;
+        }
     }
 
 
