@@ -16,8 +16,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private static FlappyBirdGame instance;
     private RenderPanel renderPanelInstance;
 
-    private Timer timer = new Timer(20, this);
     private long ticks = 0;
+    private Timer timer = new Timer(20, this);
     private Bird bird = Bird.getInstance();
     private WindowSettings windowSettings = WindowSettings.getInstance();
     private Random randomGenerator = new Random();
@@ -50,10 +50,22 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         MainWindow gameFrame = new MainWindow();
         gameFrame.addKeyListener(this);
-        addPipePair();
-        addPipePair();
-        addPipePair();
-        addPipePair();
+
+        // Calculate minimal quantity of pipe pair which will fit into window frame
+        int x = 0;
+        int quantityOfPipePairs = 0;
+        while ( x < windowSettings.getWINDOW_WIDTH())
+        {
+            x += Pipe.getWIDTH() + GAP_BETWEEN_PAIR_OF_PIPES;
+            quantityOfPipePairs++;
+        }
+
+        // Add amount of pair pipes which will fit into window frame
+        for (int i = 0; i <= quantityOfPipePairs; i++)
+        {
+            addPipePair();
+        }
+
         timer.start();
     }
 
@@ -129,7 +141,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             topPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
         }
 
-        // Simulate gravitate acceleration
+        // Simulate gravitational acceleration
         if (ticks % 10 == 0 && yAxisBirdMotionFactor <= 10)
         {
             yAxisBirdMotionFactor += 2;

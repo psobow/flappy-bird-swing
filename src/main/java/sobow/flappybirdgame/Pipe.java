@@ -12,4 +12,9 @@ public class Pipe extends Rectangle
     {
         super(x, y, WIDTH, height);
     }
+
+    public static int getWIDTH()
+    {
+        return WIDTH;
+    }
 }
