@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 public class RenderPanel extends JPanel
 {
     private static RenderPanel instance;
+    private FlappyBirdGame gameInstance;
 
     private RenderPanel()
     {
@@ -28,10 +29,6 @@ public class RenderPanel extends JPanel
             return instance;
         }
     }
-
-
-
-    private FlappyBirdGame gameInstance;
 
     @Override
     protected void paintComponent(Graphics g)
