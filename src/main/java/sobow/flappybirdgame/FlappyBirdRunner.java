@@ -1,10 +1,12 @@
 package sobow.flappybirdgame;
 
 
+import java.awt.EventQueue;
+
 public class FlappyBirdRunner
 {
     public static void main(String[] args)
     {
-        new RenderGameRelationInitializator();
+        EventQueue.invokeLater(RenderGameRelationInitializator::new);
     }
 }

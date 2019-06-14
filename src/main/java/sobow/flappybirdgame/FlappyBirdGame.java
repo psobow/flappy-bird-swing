@@ -1,7 +1,6 @@
 package sobow.flappybirdgame;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,17 +25,19 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private List<Pipe> bottomPipes = new ArrayList<>();
     private List<Pipe> topPipes = new ArrayList<>();
 
+    private int yAxisBirdMotionFactor = 0;
+
     private final int GROUND_HEIGHT = windowSettings.getWINDOW_HEIGHT() / 6;
     private final int GRASS_HEIGHT = windowSettings.getWINDOW_HEIGHT() / 50;
     private final int DISTANCE_BETWEEN_TOP_AND_GROUND = windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT;
 
     private final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
-    private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = (int) ( (windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT) / 1.5);
+    private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = (int) ((windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT) / 1.5);
 
     private final int GAP_BETWEEN_TWO_PIPES = 100;
-    private final int GAP_BETWEEN_PAIR_OF_PIPES = 300;
-    private final int INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES = 300;
-    private final int SPEED_PER_TICK = 5;
+    private final int GAP_BETWEEN_PAIR_OF_PIPES = 400;
+    private final int INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES = 500;
+    private final int BIRD_SPEED_PER_TICK_ALONG_X_AXIS = 4;
 
     private final Color PIPES_COLOR = Color.cyan.darker().darker();
     private final Color BACKGROUND_COLOR = Color.GRAY;
@@ -45,12 +46,10 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private final Color BIRD_COLOR = Color.black;
 
 
-
-
-
     private FlappyBirdGame()
     {
-        EventQueue.invokeLater(MainWindow::new);
+        MainWindow gameFrame = new MainWindow();
+        gameFrame.addKeyListener(this);
         addPipePair();
         addPipePair();
         addPipePair();
@@ -76,33 +75,74 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         }
     }
 
-    public void addPipePair()
+    private void addPipePair()
     {
-        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT);
+        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(
+                MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT);
 
-        if (bottomPipes.size() == 0 && topPipes.size() == 0)
+        if (bottomPipes.isEmpty() && topPipes.isEmpty())
         {
             bottomPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
-                               windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT,
-                               bottomPipeHeight));
+                                     windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT,
+                                     bottomPipeHeight));
 
             topPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
-                               0,
-                               windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT - GAP_BETWEEN_TWO_PIPES));
+                                  0,
+                                  windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT
+                                          - GAP_BETWEEN_TWO_PIPES));
         }
         else
         {
             bottomPipes.add(new Pipe(bottomPipes.get(bottomPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
-                               windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT,
-                               bottomPipeHeight));
+                                     windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT,
+                                     bottomPipeHeight));
 
             topPipes.add(new Pipe(topPipes.get(topPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
-                               0,
-                               windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT - GAP_BETWEEN_TWO_PIPES));
+                                  0,
+                                  windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT
+                                          - GAP_BETWEEN_TWO_PIPES));
         }
     }
 
-    public void paintPipe(Graphics g, Pipe pipe, Color color)
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        renderPanelInstance.revalidate();
+        renderPanelInstance.repaint();
+
+        ticks++;
+
+        // Check if the oldest pair of pipes is behind window frame and delete that one.
+        // also add add new pair of pipes
+        if (bottomPipes.size() > 0 && bottomPipes.get(0).x + bottomPipes.get(0).width < 0)
+        {
+            addPipePair();
+            bottomPipes.remove(0);
+            topPipes.remove(0);
+        }
+
+        // Simulate motion of bird along X axis by moving pair of pipes towards left frame side.
+        for (int i = 0; i < bottomPipes.size(); i++)
+        {
+            bottomPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
+            topPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
+        }
+
+        // Simulate gravitate acceleration
+        if (ticks % 10 == 0 && yAxisBirdMotionFactor <= 10)
+        {
+            yAxisBirdMotionFactor += 2;
+        }
+
+        // Bird free fall
+        bird.y += yAxisBirdMotionFactor; // When yAxisBirdMotionFactor value is positive bird fly upwards and fly downwards if negative
+
+        // Examine collision with enviroment
+        // TODO: add collsion
+    }
+
+    private void paintPipe(Graphics g, Pipe pipe, Color color)
     {
         g.setColor(color);
         g.fillRect(pipe.x, pipe.y, pipe.width, pipe.height);
@@ -135,49 +175,22 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        renderPanelInstance.revalidate();
-        renderPanelInstance.repaint();
-
-        ticks++;
-
-
-        if (bottomPipes.size() > 0 &&
-                    bottomPipes.get(0).x + bottomPipes.get(0).width < 0)
-        {
-            addPipePair();
-            bottomPipes.remove(0);
-            topPipes.remove(0);
-        }
-
-        for(int i = 0; i < bottomPipes.size(); i++)
-        {
-            bottomPipes.get(i).x -= SPEED_PER_TICK;
-            topPipes.get(i).x -= SPEED_PER_TICK;
-        }
-    }
-
-
-    public void setRenderPanelInstance(RenderPanel renderPanelInstance)
-    {
-        this.renderPanelInstance = renderPanelInstance;
-    }
-
-    @Override
     public void keyPressed(KeyEvent e)
     {
         int keyID = e.getKeyCode();
         switch (keyID)
         {
             case KeyEvent.VK_SPACE:
-                // TODO: zaimplementować poruszanie w góre
+                // Spacebar tap cause change yAxisBirdMotionFactor for negative value and will cause Bird flying gently upward.
+                yAxisBirdMotionFactor = -5;
                 break;
-
+            case KeyEvent.VK_ENTER:
+                // TODO: restard game
+                break;
             default:
+                break;
         }
     }
-
 
     @Override
     public void keyTyped(KeyEvent e)
@@ -189,5 +202,10 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     public void keyReleased(KeyEvent e)
     {
 
+    }
+
+    public void setRenderPanelInstance(RenderPanel renderPanelInstance)
+    {
+        this.renderPanelInstance = renderPanelInstance;
     }
 }
