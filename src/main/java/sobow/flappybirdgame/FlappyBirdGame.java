@@ -1,6 +1,7 @@
 package sobow.flappybirdgame;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -155,25 +156,25 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             bottomPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
             topPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
 
-            // Check bird collision with pipes
+            // Score player
+            if (bird.x == bottomPipes.get(i).x + Pipe.getWIDTH())
+            {
+                playerScore++;
+            }
+
             boolean isBirdAboveBottomPipe = bird.x + bird.width >= bottomPipes.get(i).x
-                                                       && bird.x <= bottomPipes.get(i).x + Pipe.getWIDTH();
+                                                    && bird.x <= bottomPipes.get(i).x + Pipe.getWIDTH();
 
             boolean isBirdBetweenTwoPipesYAxis = bird.y > topPipes.get(i).y + topPipes.get(i).height
                                                       && bird.y + bird.height < bottomPipes.get(i).y;
 
+            // Check bird collision with pipes
             if (isBirdAboveBottomPipe && isBirdBetweenTwoPipesYAxis == false)
             {
                 collisionWithPipes = true;
                 break;
             }
 
-        }
-
-        // Simulate gravitational acceleration
-        if (ticks % 10 == 0 && yAxisBirdMotionFactor <= 10)
-        {
-            yAxisBirdMotionFactor += 2;
         }
 
         // Examine collision with enviroment
@@ -186,6 +187,12 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             renderPanelInstance.revalidate();
             renderPanelInstance.repaint();
             timer.stop();
+        }
+
+        // Simulate gravitational acceleration
+        if (ticks % 10 == 0 && yAxisBirdMotionFactor <= 10)
+        {
+            yAxisBirdMotionFactor += 2;
         }
 
         // Bird free fall
@@ -232,17 +239,17 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             paintPipe(g, bottomPipes.get(i), PIPES_COLOR);
             paintPipe(g, topPipes.get(i), PIPES_COLOR);
         }
+
         // initial information
+        g.setColor(TEXT_COLOR);
+        g.setFont(new Font("Arial", 1 , 35));
         if (timer.isRunning() == false)
         {
-            g.setColor(TEXT_COLOR);
-            g.drawString("Use space bar to operate bird. Press Enter to start game.",
-                         windowSettings.getWINDOW_WIDTH() / 3,
-                         windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT / 2);
+            g.drawString("Press space bar to start!",
+                         windowSettings.getWINDOW_WIDTH() / 4,
+                         windowSettings.getWINDOW_HEIGHT() / 3);
         }
-
         // score info
-        g.setColor(TEXT_COLOR);
         g.drawString("Score: " + playerScore,
                      50,
                      windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT / 2);
@@ -260,9 +267,10 @@ public class FlappyBirdGame implements ActionListener, KeyListener
                 {
                     yAxisBirdMotionFactor = -5;
                 }
-                break;
-            case KeyEvent.VK_ENTER:
-                resetGame();
+                if (timer.isRunning() == false)
+                {
+                    resetGame();
+                }
                 break;
             default:
                 break;
@@ -278,17 +286,13 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             ticks = 0;
             yAxisBirdMotionFactor = 0;
             playerScore = 0;
-
             collisionWithPipes = false;
             collisionWithBottom = false;
             collisionWithTop = false;
             Bird.resetBirdPosition();
         }
 
-        if (timer.isRunning() == false)
-        {
-            timer.start();
-        }
+        timer.start();
     }
 
     @Override
