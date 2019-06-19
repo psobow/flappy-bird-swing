@@ -58,8 +58,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         MainWindow gameFrame = new MainWindow();
         gameFrame.addKeyListener(this);
         addInitialPipes();
-
-        timer.start();
     }
 
     private void addInitialPipes()
@@ -140,7 +138,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         ticks++;
 
         // Check if the oldest pair of pipes is behind window frame and delete that one.
-        // also add add new pair of pipes
+        // also add new pair of pipes
         if (bottomPipes.size() > 0 && bottomPipes.get(0).x + bottomPipes.get(0).width < 0)
         {
             addPipePair();
@@ -231,6 +229,12 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             paintPipe(g, bottomPipes.get(i), PIPES_COLOR);
             paintPipe(g, topPipes.get(i), PIPES_COLOR);
         }
+        // initial information
+        if (timer.isRunning() == false)
+        {
+            g.setColor(Color.BLACK);
+            g.drawString("Use space bar to operate bird. Press Enter to start game.", windowSettings.getWINDOW_WIDTH() / 3, windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT /2);
+        }
     }
 
     @Override
@@ -241,26 +245,37 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         {
             case KeyEvent.VK_SPACE:
                 // Spacebar tap cause change yAxisBirdMotionFactor for negative value and will cause Bird flying gently upward.
-                yAxisBirdMotionFactor = -5;
+                if (timer.isRunning() && birdAlive)
+                {
+                    yAxisBirdMotionFactor = -5;
+                }
                 break;
             case KeyEvent.VK_ENTER:
-                addInitialPipes();
-                birdAlive = true;
-                ticks = 0;
-                yAxisBirdMotionFactor = 0;
-
-                collisionWithPipes = false;
-                collisionWithBottom = false;
-                collisionWithTop = false;
-
-                Bird.resetBirdPosition();
-                if (timer.isRunning() == false)
-                {
-                    timer.start();
-                }
+                resetGame();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void resetGame()
+    {
+        if (birdAlive == false)
+        {
+            addInitialPipes();
+            birdAlive = true;
+            ticks = 0;
+            yAxisBirdMotionFactor = 0;
+
+            collisionWithPipes = false;
+            collisionWithBottom = false;
+            collisionWithTop = false;
+            Bird.resetBirdPosition();
+        }
+
+        if (timer.isRunning() == false)
+        {
+            timer.start();
         }
     }
 
