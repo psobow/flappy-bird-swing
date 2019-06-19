@@ -156,14 +156,13 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             topPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
 
             // Check bird collision with pipes
-            // Jeżeli przód ptaszka jest większy od początku rury
-            // oraz tył ptaszka mniejszy od końca rury
-            // sprwadzić czy ptaszek znaduje się pomiędzy rurami.
-            boolean test = bird.x + bird.width >= bottomPipes.get(i).x
-                                   && bird.x <= bottomPipes.get(i).x + Pipe.getWIDTH()
-                                   && ( bird.y <= topPipes.get(i).y + topPipes.get(i).height
-                                                || bird.y + bird.height >= bottomPipes.get(i).y );
-            if (test)
+            boolean isBirdAboveBottomPipe = bird.x + bird.width >= bottomPipes.get(i).x
+                                                       && bird.x <= bottomPipes.get(i).x + Pipe.getWIDTH();
+
+            boolean isBirdBetweenTwoPipesYAxis = bird.y > topPipes.get(i).y + topPipes.get(i).height
+                                                      && bird.y + bird.height < bottomPipes.get(i).y;
+
+            if (isBirdAboveBottomPipe && isBirdBetweenTwoPipesYAxis == false)
             {
                 collisionWithPipes = true;
                 break;
