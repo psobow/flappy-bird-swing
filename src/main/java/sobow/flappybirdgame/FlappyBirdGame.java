@@ -46,7 +46,14 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private final int GAP_BETWEEN_TWO_PIPES = 100;
     private final int GAP_BETWEEN_PAIR_OF_PIPES = 400;
     private final int INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES = 500;
-    private final int BIRD_SPEED_PER_TICK_ALONG_X_AXIS = 4;
+
+    private final int BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS = 4;
+    private final int BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS = 2;
+
+    private final int MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR = 10;
+    private final int MINIMUM_NEGATIVE_VALUE_OF_BIRD_MOTION_FACTOR = -5;
+
+    private final int INFORMATION_FONT_SIZE = 35;
 
     private final Color PIPES_COLOR = Color.cyan.darker().darker();
     private final Color BACKGROUND_COLOR = Color.GRAY;
@@ -70,6 +77,17 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         topPipes.clear();
 
         // Calculate minimal quantity of pipe pair which will fit into window frame
+        int quantityOfPipePairs = getMinimalQuantityOfPipePairsPerFrame();
+
+        // Add just amount of pair pipes which fit into window frame
+        for (int i = 0; i < quantityOfPipePairs; i++)
+        {
+            addPipePair();
+        }
+    }
+
+    private int getMinimalQuantityOfPipePairsPerFrame()
+    {
         int x = 0;
         int quantityOfPipePairs = 0;
         while ( x < windowSettings.getWINDOW_WIDTH())
@@ -77,12 +95,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             x += Pipe.getWIDTH() + GAP_BETWEEN_PAIR_OF_PIPES;
             quantityOfPipePairs++;
         }
-
-        // Add just amount of pair pipes which fit into window frame
-        for (int i = 0; i <= quantityOfPipePairs; i++)
-        {
-            addPipePair();
-        }
+        return quantityOfPipePairs + 1;
     }
 
     public static FlappyBirdGame getInstance()
@@ -150,53 +163,49 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             topPipes.remove(0);
         }
 
-        // Simulate motion of bird along X axis by moving pair of pipes towards left frame side.
+
         for (int i = 0; i < bottomPipes.size(); i++)
         {
-            bottomPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
-            topPipes.get(i).x -= BIRD_SPEED_PER_TICK_ALONG_X_AXIS;
+            // Simulate motion of bird along X axis by moving pair of pipes towards left frame side.
+            bottomPipes.get(i).x -= BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS;
+            topPipes.get(i).x -= BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS;
 
-            // Score player
+            // Score player if he crosed pipes
             if (bird.x == bottomPipes.get(i).x + Pipe.getWIDTH())
             {
                 playerScore++;
             }
 
+            // Check bird collision with pipes
             boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird, bottomPipes.get(i));
             boolean isBirdBetweenTwoPipesYAxis = CollisionResolver.isBirdBetweenTwoPipes(bird, bottomPipes.get(i), topPipes.get(i));
-
-            // Check bird collision with pipes
             if (birdAboveBottomPipe && isBirdBetweenTwoPipesYAxis == false)
             {
                 collisionWithPipes = true;
                 break;
             }
-
         }
 
-        // Examine collision with enviroment
+        // Examine collisions
         collisionWithTop = CollisionResolver.isBirdCollidingWithTop(bird);
         collisionWithBottom = CollisionResolver.isBirdCollidingWithGround(bird, DISTANCE_BETWEEN_TOP_AND_GROUND);
-
         if (collisionWithTop || collisionWithBottom || collisionWithPipes)
         {
             birdAlive = false;
+            // Repainting frame for change bird color after collision
             renderPanelInstance.revalidate();
             renderPanelInstance.repaint();
             timer.stop();
         }
 
         // Simulate gravitational acceleration
-        if (ticks % 10 == 0 && yAxisBirdMotionFactor <= 10)
+        if (ticks % 10 == 0 && yAxisBirdMotionFactor <= MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR)
         {
-            yAxisBirdMotionFactor += 2;
+            yAxisBirdMotionFactor += BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS;
         }
 
-        // Bird free fall
-        if(birdAlive)
-        {
-            bird.y += yAxisBirdMotionFactor; // When yAxisBirdMotionFactor value is positive bird fly upwards and fly downwards if negative
-        }
+        // Bird motion
+        bird.y += yAxisBirdMotionFactor; // When yAxisBirdMotionFactor value is positive bird move downwards and move upwards if negative
     }
 
     private void paintPipe(Graphics g, Pipe pipe, Color color)
@@ -239,7 +248,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         // initial information
         g.setColor(TEXT_COLOR);
-        g.setFont(new Font("Arial", 1 , 35));
+        g.setFont(new Font("Arial", 1 , INFORMATION_FONT_SIZE));
         if (timer.isRunning() == false)
         {
             g.drawString("Press space bar to start!",
@@ -262,7 +271,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
                 // Spacebar tap cause change yAxisBirdMotionFactor for negative value and will cause Bird flying gently upward.
                 if (timer.isRunning() && birdAlive)
                 {
-                    yAxisBirdMotionFactor = -5;
+                    yAxisBirdMotionFactor = MINIMUM_NEGATIVE_VALUE_OF_BIRD_MOTION_FACTOR;
                 }
                 if (timer.isRunning() == false)
                 {
