@@ -162,14 +162,11 @@ public class FlappyBirdGame implements ActionListener, KeyListener
                 playerScore++;
             }
 
-            boolean isBirdAboveBottomPipe = bird.x + bird.width >= bottomPipes.get(i).x
-                                                    && bird.x <= bottomPipes.get(i).x + Pipe.getWIDTH();
-
-            boolean isBirdBetweenTwoPipesYAxis = bird.y > topPipes.get(i).y + topPipes.get(i).height
-                                                      && bird.y + bird.height < bottomPipes.get(i).y;
+            boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird, bottomPipes.get(i));
+            boolean isBirdBetweenTwoPipesYAxis = CollisionResolver.isBirdBetweenTwoPipes(bird, bottomPipes.get(i), topPipes.get(i));
 
             // Check bird collision with pipes
-            if (isBirdAboveBottomPipe && isBirdBetweenTwoPipesYAxis == false)
+            if (birdAboveBottomPipe && isBirdBetweenTwoPipesYAxis == false)
             {
                 collisionWithPipes = true;
                 break;
@@ -178,8 +175,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         }
 
         // Examine collision with enviroment
-        collisionWithTop = bird.y <= 0;
-        collisionWithBottom = bird.y + bird.height >= DISTANCE_BETWEEN_TOP_AND_GROUND;
+        collisionWithTop = CollisionResolver.isBirdCollidingWithTop(bird);
+        collisionWithBottom = CollisionResolver.isBirdCollidingWithGround(bird, DISTANCE_BETWEEN_TOP_AND_GROUND);
 
         if (collisionWithTop || collisionWithBottom || collisionWithPipes)
         {
