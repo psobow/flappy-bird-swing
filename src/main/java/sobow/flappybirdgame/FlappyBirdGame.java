@@ -48,7 +48,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private final int INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES = 500;
 
     private final int BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS = 4;
-    private final int BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS = 2;
+    private final int BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS = 1;
 
     private final int MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR = 10;
     private final int MINIMUM_NEGATIVE_VALUE_OF_BIRD_MOTION_FACTOR = -5;
@@ -186,6 +186,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             }
         }
 
+
         // Examine collisions
         collisionWithTop = CollisionResolver.isBirdCollidingWithTop(bird);
         collisionWithBottom = CollisionResolver.isBirdCollidingWithGround(bird, DISTANCE_BETWEEN_TOP_AND_GROUND);
@@ -199,7 +200,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         }
 
         // Simulate gravitational acceleration
-        if (ticks % 10 == 0 && yAxisBirdMotionFactor <= MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR)
+        if (ticks % 5 == 0 && yAxisBirdMotionFactor <= MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR)
         {
             yAxisBirdMotionFactor += BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS;
         }
