@@ -230,14 +230,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, windowSettings.getWINDOW_WIDTH(), GRASS_HEIGHT);
 
         // Paint bird
-        if (birdAlive == true)
-        {
-            g.setColor(BIRD_COLOR);
-        }
-        else
-        {
-            g.setColor(DEAD_BIRD_COLOR);
-        }
+        g.setColor(birdAlive == true ? BIRD_COLOR : DEAD_BIRD_COLOR);
         g.fillRect(bird.x, bird.y, bird.width, bird.height);
 
         // Paint pipes
@@ -252,7 +245,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         g.setFont(new Font("Arial", 1 , INFORMATION_FONT_SIZE));
         if (timer.isRunning() == false)
         {
-            g.drawString("Press space bar to start!",
+            g.drawString("Press space bar to " + (ticks != 0 ? "re" : "") + "start!",
                          windowSettings.getWINDOW_WIDTH() / 4,
                          windowSettings.getWINDOW_HEIGHT() / 3);
         }
