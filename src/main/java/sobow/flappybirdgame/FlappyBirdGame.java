@@ -63,6 +63,23 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private final Color DEAD_BIRD_COLOR = Color.RED.darker().darker();
     private final Color TEXT_COLOR = Color.BLACK;
 
+    public static FlappyBirdGame getInstance()
+    {
+        if (instance == null)
+        {
+            synchronized (FlappyBirdGame.class)
+            {
+                if (instance == null)
+                {
+                    instance = new FlappyBirdGame();
+                }
+            }
+        }
+        synchronized (FlappyBirdGame.class)
+        {
+            return instance;
+        }
+    }
 
     private FlappyBirdGame()
     {
@@ -98,24 +115,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         return quantityOfPipePairs + 1;
     }
 
-    public static FlappyBirdGame getInstance()
-    {
-        if (instance == null)
-        {
-            synchronized (FlappyBirdGame.class)
-            {
-                if (instance == null)
-                {
-                    instance = new FlappyBirdGame();
-                }
-            }
-        }
-        synchronized (FlappyBirdGame.class)
-        {
-            return instance;
-        }
-    }
-
     private void addPipePair()
     {
         int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(
@@ -130,7 +129,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             topPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
                                   0,
                                   windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT
-                                          - GAP_BETWEEN_TWO_PIPES));
+                                  - GAP_BETWEEN_TWO_PIPES));
         }
         else
         {
@@ -141,10 +140,9 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             topPipes.add(new Pipe(topPipes.get(topPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
                                   0,
                                   windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT
-                                          - GAP_BETWEEN_TWO_PIPES));
+                                  - GAP_BETWEEN_TWO_PIPES));
         }
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e)
