@@ -8,8 +8,9 @@ public class Bird extends Rectangle
     private static final WindowSettings WINDOW_SETTINGS = WindowSettings.getInstance();
 
     private static final int BIRD_WIDTH = WINDOW_SETTINGS.getWINDOW_HEIGHT() / 25;
-    private static final int BIRD_HEIGHT =  WINDOW_SETTINGS.getWINDOW_HEIGHT() / 25;
-    private static final int INIT_X_POS = WINDOW_SETTINGS.getWINDOW_WIDTH() / 2 - (BIRD_WIDTH / 2 + WINDOW_SETTINGS.getWINDOW_WIDTH() / 3);
+    private static final int BIRD_HEIGHT = WINDOW_SETTINGS.getWINDOW_HEIGHT() / 25;
+    private static final int INIT_X_POS =
+            WINDOW_SETTINGS.getWINDOW_WIDTH() / 2 - (BIRD_WIDTH / 2 + WINDOW_SETTINGS.getWINDOW_WIDTH() / 3);
     private static final int INIT_Y_POS = WINDOW_SETTINGS.getWINDOW_HEIGHT() / 2 - BIRD_HEIGHT / 2;
 
     private Bird()

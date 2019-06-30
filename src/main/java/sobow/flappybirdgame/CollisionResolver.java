@@ -4,14 +4,12 @@ public class CollisionResolver
 {
     public static boolean isBirdAboveBottomPipe(Bird bird, Pipe bottomPipe)
     {
-        return bird.x + bird.width >= bottomPipe.x
-                && bird.x <= bottomPipe.x + Pipe.getWIDTH();
+        return bird.x + bird.width >= bottomPipe.x && bird.x <= bottomPipe.x + Pipe.getWIDTH();
     }
 
     public static boolean isBirdBetweenTwoPipes(Bird bird, Pipe bottomPipe, Pipe topPipe)
     {
-        return bird.y > topPipe.y + topPipe.height
-                       && bird.y + bird.height < bottomPipe.y;
+        return bird.y > topPipe.y + topPipe.height && bird.y + bird.height < bottomPipe.y;
     }
 
     public static boolean isBirdCollidingWithTop(Bird bird)

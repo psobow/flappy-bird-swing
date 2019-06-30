@@ -107,7 +107,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         int x = 0;
         int quantityOfPipePairs = 0;
-        while ( x < windowSettings.getWINDOW_WIDTH())
+        while (x < windowSettings.getWINDOW_WIDTH())
         {
             x += Pipe.getWIDTH() + GAP_BETWEEN_PAIR_OF_PIPES;
             quantityOfPipePairs++;
@@ -161,7 +161,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             topPipes.remove(0);
         }
 
-
         for (int i = 0; i < bottomPipes.size(); i++)
         {
             // Simulate motion of bird along X axis by moving pair of pipes towards left frame side.
@@ -176,14 +175,15 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
             // Check bird collision with pipes
             boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird, bottomPipes.get(i));
-            boolean isBirdBetweenTwoPipesYAxis = CollisionResolver.isBirdBetweenTwoPipes(bird, bottomPipes.get(i), topPipes.get(i));
+            boolean isBirdBetweenTwoPipesYAxis = CollisionResolver.isBirdBetweenTwoPipes(bird,
+                                                                                         bottomPipes.get(i),
+                                                                                         topPipes.get(i));
             if (birdAboveBottomPipe && isBirdBetweenTwoPipesYAxis == false)
             {
                 collisionWithPipes = true;
                 break;
             }
         }
-
 
         // Examine collisions
         collisionWithTop = CollisionResolver.isBirdCollidingWithTop(bird);
@@ -240,7 +240,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         // initial information
         g.setColor(TEXT_COLOR);
-        g.setFont(new Font("Arial", 1 , INFORMATION_FONT_SIZE));
+        g.setFont(new Font("Arial", 1, INFORMATION_FONT_SIZE));
         if (timer.isRunning() == false)
         {
             g.drawString("Press space bar to " + (ticks != 0 ? "re" : "") + "start!",
@@ -248,9 +248,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
                          windowSettings.getWINDOW_HEIGHT() / 3);
         }
         // score info
-        g.drawString("Score: " + playerScore,
-                     50,
-                     windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT / 2);
+        g.drawString("Score: " + playerScore, 50, windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT / 2);
     }
 
     @Override
