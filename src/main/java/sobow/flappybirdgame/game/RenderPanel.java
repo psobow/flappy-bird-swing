@@ -1,4 +1,4 @@
-package sobow.flappybirdgame;
+package sobow.flappybirdgame.game;
 
 import java.awt.Graphics;
 import javax.swing.JPanel;

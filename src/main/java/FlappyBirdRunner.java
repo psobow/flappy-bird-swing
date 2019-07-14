@@ -1,5 +1,5 @@
 import java.awt.EventQueue;
-import sobow.flappybirdgame.RenderGameRelationInitializator;
+import sobow.flappybirdgame.game.RenderGameRelationInitializator;
 
 public class FlappyBirdRunner
 {

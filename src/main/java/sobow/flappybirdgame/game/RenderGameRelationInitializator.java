@@ -1,4 +1,4 @@
-package sobow.flappybirdgame;
+package sobow.flappybirdgame.game;
 
 public class RenderGameRelationInitializator
 {

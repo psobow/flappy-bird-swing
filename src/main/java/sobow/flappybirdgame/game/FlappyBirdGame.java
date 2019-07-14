@@ -1,4 +1,4 @@
-package sobow.flappybirdgame;
+package sobow.flappybirdgame.game;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.swing.Timer;
+import sobow.flappybirdgame.level.Bird;
+import sobow.flappybirdgame.level.CollisionResolver;
+import sobow.flappybirdgame.level.Pipe;
+import sobow.flappybirdgame.settings.WindowSettings;
 
 public class FlappyBirdGame implements ActionListener, KeyListener
 {

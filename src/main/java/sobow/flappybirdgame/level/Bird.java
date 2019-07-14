@@ -1,6 +1,7 @@
-package sobow.flappybirdgame;
+package sobow.flappybirdgame.level;
 
 import java.awt.Rectangle;
+import sobow.flappybirdgame.settings.WindowSettings;
 
 public class Bird extends Rectangle
 {

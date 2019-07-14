@@ -1,4 +1,4 @@
-package sobow.flappybirdgame;
+package sobow.flappybirdgame.level;
 
 public class CollisionResolver
 {
