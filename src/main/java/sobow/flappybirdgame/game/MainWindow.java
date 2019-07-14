@@ -6,16 +6,14 @@ import sobow.flappybirdgame.settings.WindowSettings;
 
 public class MainWindow extends JFrame
 {
-    private final RenderPanel RENDER_PANEL = RenderPanel.getInstance();
-
     public MainWindow()
     {
-        add(RENDER_PANEL);
-        setTitle("Flappy Bird");
+        add(RenderPanel.getInstance());
+        setTitle(WindowSettings.TITLE);
         setSize(WindowSettings.WIDTH, WindowSettings.HEIGHT);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(WindowSettings.IS_RESIZABLE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        setVisible(WindowSettings.IS_VISIBLE);
     }
 }
