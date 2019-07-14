@@ -7,13 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import javax.swing.Timer;
 import sobow.flappybirdgame.level.Bird;
 import sobow.flappybirdgame.level.CollisionResolver;
 import sobow.flappybirdgame.level.Pipe;
+import sobow.flappybirdgame.level.PipesManager;
 import sobow.flappybirdgame.settings.WindowSettings;
 
 public class FlappyBirdGame implements ActionListener, KeyListener
@@ -24,10 +22,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private long ticks = 0;
     private Timer timer = new Timer(20, this);
     private Bird bird = Bird.getInstance();
-    private Random randomGenerator = new Random();
-
-    private List<Pipe> bottomPipes = new ArrayList<>();
-    private List<Pipe> topPipes = new ArrayList<>();
+    private PipesManager pipesManager = PipesManager.getInstance();
 
     private int yAxisBirdMotionFactor = 0;
 
@@ -43,14 +38,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private final int GRASS_HEIGHT = WindowSettings.HEIGHT / 50;
     private final int DISTANCE_BETWEEN_TOP_AND_GROUND = WindowSettings.HEIGHT - GROUND_HEIGHT;
 
-    private final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
-    private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = (int) ((WindowSettings.HEIGHT - GROUND_HEIGHT) / 1.5);
 
-    private final int GAP_BETWEEN_TWO_PIPES = 100;
-    private final int GAP_BETWEEN_PAIR_OF_PIPES = 400;
-    private final int INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES = 500;
-
-    private final int BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS = 4;
     private final int BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS = 1;
 
     private final int MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR = 10;
@@ -58,7 +46,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
     private final int INFORMATION_FONT_SIZE = 35;
 
-    private final Color PIPES_COLOR = Color.cyan.darker().darker();
+
     private final Color BACKGROUND_COLOR = Color.GRAY;
     private final Color SOIL_COLOR = Color.ORANGE.darker().darker();
     private final Color GRASS_COLOR = Color.GREEN.darker().darker().darker();
@@ -88,61 +76,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         MainWindow gameFrame = new MainWindow();
         gameFrame.addKeyListener(this);
-        addInitialPipes();
-    }
-
-    private void addInitialPipes()
-    {
-        bottomPipes.clear();
-        topPipes.clear();
-
-        // Calculate minimal quantity of pipe pair which will fit into window frame
-        int quantityOfPipePairs = getMinimalQuantityOfPipePairsPerFrame();
-
-        // Add just amount of pair pipes which fit into window frame
-        for (int i = 0; i < quantityOfPipePairs; i++)
-        {
-            addPipePair();
-        }
-    }
-
-    private int getMinimalQuantityOfPipePairsPerFrame()
-    {
-        int x = 0;
-        int quantityOfPipePairs = 0;
-        while (x < WindowSettings.WIDTH)
-        {
-            x += Pipe.getWIDTH() + GAP_BETWEEN_PAIR_OF_PIPES;
-            quantityOfPipePairs++;
-        }
-        return quantityOfPipePairs + 1;
-    }
-
-    private void addPipePair()
-    {
-        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(
-                MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT);
-
-        if (bottomPipes.isEmpty() && topPipes.isEmpty())
-        {
-            bottomPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
-                                     WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT,
-                                     bottomPipeHeight));
-
-            topPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
-                                  0, WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT
-                                     - GAP_BETWEEN_TWO_PIPES));
-        }
-        else
-        {
-            bottomPipes.add(new Pipe(bottomPipes.get(bottomPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
-                                     WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT,
-                                     bottomPipeHeight));
-
-            topPipes.add(new Pipe(topPipes.get(topPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
-                                  0, WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT
-                                     - GAP_BETWEEN_TWO_PIPES));
-        }
+        pipesManager.addInitialPipes(bird);
     }
 
     @Override
@@ -153,32 +87,23 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         ticks++;
 
-        // Check if the oldest pair of pipes is behind window frame and delete that one.
-        // also add new pair of pipes
-        if (bottomPipes.size() > 0 && bottomPipes.get(0).x + bottomPipes.get(0).width < 0)
-        {
-            addPipePair();
-            bottomPipes.remove(0);
-            topPipes.remove(0);
-        }
+        pipesManager.update(bird);
 
-        for (int i = 0; i < bottomPipes.size(); i++)
+        for (int i = 0; i < pipesManager.getQUANTITY_OF_PIPES_PAIRS(); i++)
         {
-            // Simulate motion of bird along X axis by moving pair of pipes towards left frame side.
-            bottomPipes.get(i).x -= BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS;
-            topPipes.get(i).x -= BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS;
 
             // Score player if he crosed pipes
-            if (bird.x == bottomPipes.get(i).x + Pipe.getWIDTH())
+            if (bird.x == pipesManager.getBottomPipeAt(i).x + Pipe.getWIDTH())
             {
                 playerScore++;
             }
 
             // Check bird collision with pipes
-            boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird, bottomPipes.get(i));
+            boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird,
+                                                                                  pipesManager.getBottomPipeAt(i));
             boolean isBirdBetweenTwoPipesYAxis = CollisionResolver.isBirdBetweenTwoPipes(bird,
-                                                                                         bottomPipes.get(i),
-                                                                                         topPipes.get(i));
+                                                                                         pipesManager.getBottomPipeAt(i),
+                                                                                         pipesManager.getTopPipeAt(i));
             if (birdAboveBottomPipe && isBirdBetweenTwoPipesYAxis == false)
             {
                 collisionWithPipes = true;
@@ -208,12 +133,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         bird.y += yAxisBirdMotionFactor; // When yAxisBirdMotionFactor value is positive bird move downwards and move upwards if negative
     }
 
-    private void paintPipe(Graphics g, Pipe pipe, Color color)
-    {
-        g.setColor(color);
-        g.fillRect(pipe.x, pipe.y, pipe.width, pipe.height);
-    }
-
     public void repaint(Graphics g)
     {
         // Paint background
@@ -233,11 +152,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         g.fillRect(bird.x, bird.y, bird.width, bird.height);
 
         // Paint pipes
-        for (int i = 0; i < bottomPipes.size(); i++)
-        {
-            paintPipe(g, bottomPipes.get(i), PIPES_COLOR);
-            paintPipe(g, topPipes.get(i), PIPES_COLOR);
-        }
+        pipesManager.paintPipes(g);
 
         // initial information
         g.setColor(TEXT_COLOR);
@@ -278,7 +193,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         if (birdAlive == false)
         {
-            addInitialPipes();
             birdAlive = true;
             ticks = 0;
             yAxisBirdMotionFactor = 0;
@@ -286,7 +200,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             collisionWithPipes = false;
             collisionWithBottom = false;
             collisionWithTop = false;
-            Bird.resetBirdPosition();
+            Bird.resetBirdPosition(); // first we need to reset bird pos before setting up pipes again
+            pipesManager.addInitialPipes(bird);
         }
 
         timer.start();
