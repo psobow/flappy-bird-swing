@@ -60,7 +60,7 @@ public class Bird extends Rectangle
 
     public boolean isBetweenFrontPipesHorizontally(Pipe frontBottomPipe)
     {
-        return x > frontBottomPipe.x && x <= frontBottomPipe.x + Pipe.getWIDTH();
+        return x > frontBottomPipe.x && x <= frontBottomPipe.x + frontBottomPipe.width;
     }
 
     public void keyPressed(KeyEvent e)

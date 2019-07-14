@@ -80,7 +80,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         for (int i = 0; i < pipesManager.getQUANTITY_OF_PIPES_PAIRS(); i++)
         {
             // Check bird collision with pipes
-            boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird, pipesManager.getBottomPipeAt(i));
+            boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird,
+                                                                                  pipesManager.getBottomPipeAt(i));
             boolean isBirdBetweenTwoPipesYAxis = CollisionResolver.isBirdBetweenTwoPipes(bird,
                                                                                          pipesManager.getBottomPipeAt(i),
                                                                                          pipesManager.getTopPipeAt(i));
@@ -110,7 +111,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         paintBackground(g);
         ground.paint(g);
         bird.paint(g);
-        pipesManager.paintPipes(g);
+        pipesManager.paint(g);
         textMessages.paint(g, timer.isRunning(), bird.isCollided(), playerScore, bestScore);
     }
 
@@ -154,16 +155,10 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     }
 
     @Override
-    public void keyTyped(KeyEvent e)
-    {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
-    public void keyReleased(KeyEvent e)
-    {
-
-    }
+    public void keyReleased(KeyEvent e) {}
 
     public void setRenderPanelInstance(RenderPanel renderPanelInstance)
     {

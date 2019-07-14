@@ -1,6 +1,6 @@
 package sobow.flappybirdgame.level;
 
-import java.awt.Color;
+
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +13,15 @@ public class PipesManager
     private List<Pipe> bottomPipes = new ArrayList<>();
     private List<Pipe> topPipes = new ArrayList<>();
     private Random randomGenerator = new Random();
+    private Ground ground = Ground.getInstance();
 
-    private final int GROUND_HEIGHT = WindowSettings.HEIGHT / 6;
     private final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
-    private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = (int) ((WindowSettings.HEIGHT - GROUND_HEIGHT) / 1.5);
-
+    private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = 300;
     private final int GAP_BETWEEN_TWO_PIPES = 150;
     private final int GAP_BETWEEN_PAIR_OF_PIPES = 400;
     private final int FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION = 700;
     private final int PIPES_SPEED = 4;
     private final int QUANTITY_OF_PIPES_PAIRS = 3;
-
-    private final Color PIPES_COLOR = Color.cyan.darker().darker();
 
     private PipesManager() {}
 
@@ -66,31 +63,33 @@ public class PipesManager
         if (bottomPipes.isEmpty() && topPipes.isEmpty())
         {
             bottomPipes.add(new Pipe(FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION,
-                                     WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT,
+                                     WindowSettings.HEIGHT - bottomPipeHeight - ground.getGROUND_HEIGHT(),
                                      bottomPipeHeight));
 
             topPipes.add(new Pipe(FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION,
                                   0,
-                                  WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT - GAP_BETWEEN_TWO_PIPES));
+                                  WindowSettings.HEIGHT - bottomPipeHeight - ground.getGROUND_HEIGHT()
+                                  - GAP_BETWEEN_TWO_PIPES));
         }
         else
         {
             bottomPipes.add(new Pipe(bottomPipes.get(bottomPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
-                                     WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT,
+                                     WindowSettings.HEIGHT - bottomPipeHeight - ground.getGROUND_HEIGHT(),
                                      bottomPipeHeight));
 
             topPipes.add(new Pipe(topPipes.get(topPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
                                   0,
-                                  WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT - GAP_BETWEEN_TWO_PIPES));
+                                  WindowSettings.HEIGHT - bottomPipeHeight - ground.getGROUND_HEIGHT()
+                                  - GAP_BETWEEN_TWO_PIPES));
         }
     }
 
-    public void paintPipes(Graphics g)
+    public void paint(Graphics g)
     {
-        for (int i = 0; i < bottomPipes.size(); i++)
+        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
         {
-            Pipe.paintPipe(g, bottomPipes.get(i), PIPES_COLOR);
-            Pipe.paintPipe(g, topPipes.get(i), PIPES_COLOR);
+            bottomPipes.get(i).paint(g);
+            topPipes.get(i).paint(g);
         }
     }
 

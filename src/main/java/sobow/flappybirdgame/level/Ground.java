@@ -44,4 +44,9 @@ public class Ground extends Rectangle
         g.setColor(GRASS_COLOR);
         g.fillRect(0, DISTANCE_BETWEEN_TOP_WALL_AND_GROUND, WindowSettings.WIDTH, GRASS_HEIGHT);
     }
+
+    public int getGROUND_HEIGHT()
+    {
+        return GROUND_HEIGHT;
+    }
 }
