@@ -76,7 +76,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         MainWindow gameFrame = new MainWindow();
         gameFrame.addKeyListener(this);
-        pipesManager.addInitialPipes(bird);
+        pipesManager.addInitialPipes();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         ticks++;
 
-        pipesManager.update(bird);
+        pipesManager.update();
 
         for (int i = 0; i < pipesManager.getQUANTITY_OF_PIPES_PAIRS(); i++)
         {
@@ -201,7 +201,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             collisionWithBottom = false;
             collisionWithTop = false;
             Bird.resetBirdPosition(); // first we need to reset bird pos before setting up pipes again
-            pipesManager.addInitialPipes(bird);
+            pipesManager.addInitialPipes();
         }
 
         timer.start();

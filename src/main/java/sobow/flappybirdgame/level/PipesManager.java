@@ -20,7 +20,7 @@ public class PipesManager
 
     private final int GAP_BETWEEN_TWO_PIPES = 100;
     private final int GAP_BETWEEN_PAIR_OF_PIPES = 400;
-    private final int INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES = 500;
+    private final int FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION = 700;
     private final int BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS = 4;
     private final int QUANTITY_OF_PIPES_PAIRS = 3;
 
@@ -46,31 +46,30 @@ public class PipesManager
         }
     }
 
-    public void addInitialPipes(Bird bird)
+    public void addInitialPipes()
     {
         bottomPipes.clear();
         topPipes.clear();
 
-        // Add just amount of pair pipes which fit into window frame
         for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
         {
-            addPipePair(bird);
+            addPipePair();
         }
     }
 
 
-    public void addPipePair(Bird bird)
+    public void addPipePair()
     {
         int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(
                 MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT);
 
         if (bottomPipes.isEmpty() && topPipes.isEmpty())
         {
-            bottomPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
+            bottomPipes.add(new Pipe(FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION,
                                      WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT,
                                      bottomPipeHeight));
 
-            topPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
+            topPipes.add(new Pipe(FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION,
                                   0,
                                   WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT - GAP_BETWEEN_TWO_PIPES));
         }
@@ -95,13 +94,13 @@ public class PipesManager
         }
     }
 
-    public void update(Bird bird)
+    public void update()
     {
         // Check if the oldest pair of pipes is behind window frame and delete that one.
         // also add new pair of pipes
         if (bottomPipes.size() > 0 && bottomPipes.get(0).x + bottomPipes.get(0).width < 0)
         {
-            addPipePair(bird);
+            addPipePair();
             bottomPipes.remove(0);
             topPipes.remove(0);
         }
