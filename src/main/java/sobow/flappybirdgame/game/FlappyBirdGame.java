@@ -29,6 +29,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private boolean collisionWithPipes = false;
 
     private int playerScore = 0;
+    private int bestScore = 0;
 
     private final int DISTANCE_BETWEEN_TOP_AND_GRASS = 450;
 
@@ -96,24 +97,27 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         if (collisionWithTop || collisionWithBottom || collisionWithPipes)
         {
             bird.setCollided(true);
+            if (playerScore > bestScore)
+            {
+                bestScore = playerScore;
+            }
             timer.stop();
         }
     }
 
     public void repaint(Graphics g)
     {
-        // Paint background
+        paintBackground(g);
+        ground.paint(g);
+        bird.paint(g);
+        pipesManager.paintPipes(g);
+        textMessages.paint(g, timer.isRunning(), bird.isCollided(), playerScore, bestScore);
+    }
+
+    private void paintBackground(Graphics g)
+    {
         g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, WindowSettings.WIDTH, WindowSettings.HEIGHT);
-
-        ground.paint(g);
-
-        bird.paint(g);
-
-        pipesManager.paintPipes(g);
-
-        textMessages.paint(g, timer.isRunning(), playerScore);
-
     }
 
     @Override
@@ -125,13 +129,16 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         {
             bird.keyPressed(e);
         }
+        else if (!isTimerRunning && bird.isCollided() && key == KeyEvent.VK_ENTER)
+        {
+            resetGame();
+            renderPanelInstance.revalidate();
+            renderPanelInstance.repaint();
+        }
         else if (!isTimerRunning && !bird.isCollided() && key == KeyEvent.VK_SPACE)
         {
             timer.start();
-        }
-        else if (!isTimerRunning && bird.isCollided() && key == KeyEvent.VK_SPACE)
-        {
-            resetGame();
+            bird.keyPressed(e);
         }
     }
 
@@ -144,8 +151,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         collisionWithTop = false;
         bird.reset();
         pipesManager.addInitialPipes();
-
-        timer.start();
     }
 
     @Override
