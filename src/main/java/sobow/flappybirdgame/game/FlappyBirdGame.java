@@ -1,7 +1,6 @@
 package sobow.flappybirdgame.game;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +10,7 @@ import javax.swing.Timer;
 import sobow.flappybirdgame.level.Bird;
 import sobow.flappybirdgame.level.Ground;
 import sobow.flappybirdgame.level.PipesManager;
+import sobow.flappybirdgame.level.TextMessages;
 import sobow.flappybirdgame.settings.WindowSettings;
 
 public class FlappyBirdGame implements ActionListener, KeyListener
@@ -18,11 +18,11 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private static FlappyBirdGame instance;
     private RenderPanel renderPanelInstance;
 
-    private long ticks = 0;
     private Timer timer = new Timer(20, this);
     private Bird bird = Bird.getInstance();
     private PipesManager pipesManager = PipesManager.getInstance();
     private Ground ground = Ground.getInstance();
+    private TextMessages textMessages = TextMessages.getInstance();
 
     private boolean collisionWithTop = false;
     private boolean collisionWithBottom = false;
@@ -31,11 +31,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private int playerScore = 0;
 
     private final int DISTANCE_BETWEEN_TOP_AND_GRASS = 450;
-    private final int INFORMATION_FONT_SIZE = 35;
-
 
     private final Color BACKGROUND_COLOR = Color.GRAY;
-    private final Color TEXT_COLOR = Color.BLACK;
 
     public static FlappyBirdGame getInstance()
     {
@@ -67,8 +64,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         renderPanelInstance.revalidate();
         renderPanelInstance.repaint();
-
-        ticks++;
 
         boolean beforePipesUpdate = bird.isBetweenFrontPipesHorizontally(pipesManager.getBottomPipeAt(0));
         pipesManager.update();
@@ -117,17 +112,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         pipesManager.paintPipes(g);
 
-        // initial information
-        g.setColor(TEXT_COLOR);
-        g.setFont(new Font("Arial", 1, INFORMATION_FONT_SIZE));
-        if (timer.isRunning() == false)
-        {
-            g.drawString("Press space bar to " + (ticks != 0 ? "re" : "") + "start!",
-                         WindowSettings.WIDTH / 4,
-                         WindowSettings.HEIGHT / 3);
-        }
-        // score info
-        g.drawString("Score: " + playerScore, 50, 495);
+        textMessages.paint(g, timer.isRunning(), playerScore);
+
     }
 
     @Override
@@ -152,7 +138,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private void resetGame()
     {
         bird.setCollided(false);
-        ticks = 0;
         playerScore = 0;
         collisionWithPipes = false;
         collisionWithBottom = false;
