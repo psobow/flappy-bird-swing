@@ -10,7 +10,6 @@ import java.awt.event.KeyListener;
 import javax.swing.Timer;
 import sobow.flappybirdgame.level.Bird;
 import sobow.flappybirdgame.level.CollisionResolver;
-import sobow.flappybirdgame.level.Pipe;
 import sobow.flappybirdgame.level.PipesManager;
 import sobow.flappybirdgame.settings.WindowSettings;
 
@@ -87,20 +86,28 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         ticks++;
 
+        boolean beforePipesUpdate = bird.isBetweenFrontPipesHorizontally(pipesManager.getBottomPipeAt(0));
         pipesManager.update();
+        boolean afterPipesUpdate = bird.isBetweenFrontPipesHorizontally(pipesManager.getBottomPipeAt(0));
+
+        if (beforePipesUpdate && !afterPipesUpdate)
+        {
+            playerScore++;
+        }
+
+        // Simulate gravitational acceleration
+        if (ticks % 5 == 0 && yAxisBirdMotionFactor <= MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR)
+        {
+            yAxisBirdMotionFactor += BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS;
+        }
+
+        // Bird motion
+        bird.y += yAxisBirdMotionFactor; // When yAxisBirdMotionFactor value is positive bird move downwards and move upwards if negative
 
         for (int i = 0; i < pipesManager.getQUANTITY_OF_PIPES_PAIRS(); i++)
         {
-
-            // Score player if he crosed pipes
-            if (bird.x == pipesManager.getBottomPipeAt(i).x + Pipe.getWIDTH())
-            {
-                playerScore++;
-            }
-
             // Check bird collision with pipes
-            boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird,
-                                                                                  pipesManager.getBottomPipeAt(i));
+            boolean birdAboveBottomPipe = CollisionResolver.isBirdAboveBottomPipe(bird, pipesManager.getBottomPipeAt(i));
             boolean isBirdBetweenTwoPipesYAxis = CollisionResolver.isBirdBetweenTwoPipes(bird,
                                                                                          pipesManager.getBottomPipeAt(i),
                                                                                          pipesManager.getTopPipeAt(i));
@@ -122,15 +129,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             renderPanelInstance.repaint();
             timer.stop();
         }
-
-        // Simulate gravitational acceleration
-        if (ticks % 5 == 0 && yAxisBirdMotionFactor <= MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR)
-        {
-            yAxisBirdMotionFactor += BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS;
-        }
-
-        // Bird motion
-        bird.y += yAxisBirdMotionFactor; // When yAxisBirdMotionFactor value is positive bird move downwards and move upwards if negative
     }
 
     public void repaint(Graphics g)

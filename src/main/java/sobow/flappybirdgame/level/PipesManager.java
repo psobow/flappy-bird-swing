@@ -18,10 +18,10 @@ public class PipesManager
     private final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
     private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = (int) ((WindowSettings.HEIGHT - GROUND_HEIGHT) / 1.5);
 
-    private final int GAP_BETWEEN_TWO_PIPES = 100;
+    private final int GAP_BETWEEN_TWO_PIPES = 150;
     private final int GAP_BETWEEN_PAIR_OF_PIPES = 400;
     private final int FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION = 700;
-    private final int BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS = 4;
+    private final int PIPES_SPEED = 4;
     private final int QUANTITY_OF_PIPES_PAIRS = 3;
 
     private final Color PIPES_COLOR = Color.cyan.darker().darker();
@@ -112,8 +112,8 @@ public class PipesManager
         for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
         {
             // Simulate motion of bird along X axis by moving pair of pipes towards left frame side.
-            bottomPipes.get(i).x -= BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS;
-            topPipes.get(i).x -= BIRD_SPEED_PER_ONE_TICK_ALONG_X_AXIS;
+            bottomPipes.get(i).x -= PIPES_SPEED;
+            topPipes.get(i).x -= PIPES_SPEED;
         }
     }
 
