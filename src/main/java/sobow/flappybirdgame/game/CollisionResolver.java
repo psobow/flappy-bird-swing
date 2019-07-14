@@ -1,4 +1,7 @@
-package sobow.flappybirdgame.level;
+package sobow.flappybirdgame.game;
+
+import sobow.flappybirdgame.level.Bird;
+import sobow.flappybirdgame.level.Pipe;
 
 public class CollisionResolver
 {

@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.Timer;
 import sobow.flappybirdgame.level.Bird;
-import sobow.flappybirdgame.level.CollisionResolver;
+import sobow.flappybirdgame.level.Ground;
 import sobow.flappybirdgame.level.PipesManager;
 import sobow.flappybirdgame.settings.WindowSettings;
 
@@ -22,6 +22,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private Timer timer = new Timer(20, this);
     private Bird bird = Bird.getInstance();
     private PipesManager pipesManager = PipesManager.getInstance();
+    private Ground ground = Ground.getInstance();
 
     private boolean collisionWithTop = false;
     private boolean collisionWithBottom = false;
@@ -29,15 +30,11 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
     private int playerScore = 0;
 
-    private final int GROUND_HEIGHT = WindowSettings.HEIGHT / 6;
-    private final int GRASS_HEIGHT = WindowSettings.HEIGHT / 50;
-    private final int DISTANCE_BETWEEN_TOP_AND_GROUND = WindowSettings.HEIGHT - GROUND_HEIGHT;
+    private final int DISTANCE_BETWEEN_TOP_AND_GRASS = 450;
     private final int INFORMATION_FONT_SIZE = 35;
 
 
     private final Color BACKGROUND_COLOR = Color.GRAY;
-    private final Color SOIL_COLOR = Color.ORANGE.darker().darker();
-    private final Color GRASS_COLOR = Color.GREEN.darker().darker().darker();
     private final Color TEXT_COLOR = Color.BLACK;
 
     public static FlappyBirdGame getInstance()
@@ -100,7 +97,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         // Examine collisions
         collisionWithTop = CollisionResolver.isBirdCollidingWithTop(bird);
-        collisionWithBottom = CollisionResolver.isBirdCollidingWithGround(bird, DISTANCE_BETWEEN_TOP_AND_GROUND);
+        collisionWithBottom = CollisionResolver.isBirdCollidingWithGround(bird, DISTANCE_BETWEEN_TOP_AND_GRASS);
         if (collisionWithTop || collisionWithBottom || collisionWithPipes)
         {
             bird.setCollided(true);
@@ -114,13 +111,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, WindowSettings.WIDTH, WindowSettings.HEIGHT);
 
-        // Paint ground
-        g.setColor(SOIL_COLOR);
-        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, WindowSettings.WIDTH, GROUND_HEIGHT);
-
-        // Paint grass
-        g.setColor(GRASS_COLOR);
-        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, WindowSettings.WIDTH, GRASS_HEIGHT);
+        ground.paint(g);
 
         bird.paint(g);
 
@@ -136,7 +127,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
                          WindowSettings.HEIGHT / 3);
         }
         // score info
-        g.drawString("Score: " + playerScore, 50, WindowSettings.HEIGHT - GROUND_HEIGHT / 2);
+        g.drawString("Score: " + playerScore, 50, 495);
     }
 
     @Override
@@ -166,7 +157,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         collisionWithPipes = false;
         collisionWithBottom = false;
         collisionWithTop = false;
-        bird.reset(); // first we need to reset bird pos before setting up pipes again
+        bird.reset();
         pipesManager.addInitialPipes();
 
         timer.start();
