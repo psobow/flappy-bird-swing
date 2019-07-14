@@ -15,13 +15,13 @@ public class Bird extends Rectangle
     private static final int BOOST_FACTOR = -7; // This value describe how much upwards bird will fly after player press the key
     private static final double EARTH_ACCELERATION = 0.4;
 
+    private static final Color BIRD_COLOR = Color.black;
+    private static final Color BIRD_COLOR_AFTER_COLLISION = Color.RED.darker().darker();
+
     private static Bird instance;
 
     private float dy; // derivative y axis coordinate
     private boolean isCollided = false;
-    private final Color BIRD_COLOR = Color.black;
-    private final Color BIRD_COLOR_AFTER_COLLISION = Color.RED.darker().darker();
-
 
     private Bird()
     {
