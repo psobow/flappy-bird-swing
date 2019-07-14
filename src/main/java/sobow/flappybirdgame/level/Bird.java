@@ -6,13 +6,11 @@ import sobow.flappybirdgame.settings.WindowSettings;
 public class Bird extends Rectangle
 {
     private static Bird instance;
-    private static final WindowSettings WINDOW_SETTINGS = WindowSettings.getInstance();
 
-    private static final int BIRD_WIDTH = WINDOW_SETTINGS.getWINDOW_HEIGHT() / 25;
-    private static final int BIRD_HEIGHT = WINDOW_SETTINGS.getWINDOW_HEIGHT() / 25;
-    private static final int INIT_X_POS =
-            WINDOW_SETTINGS.getWINDOW_WIDTH() / 2 - (BIRD_WIDTH / 2 + WINDOW_SETTINGS.getWINDOW_WIDTH() / 3);
-    private static final int INIT_Y_POS = WINDOW_SETTINGS.getWINDOW_HEIGHT() / 2 - BIRD_HEIGHT / 2;
+    private static final int BIRD_WIDTH = WindowSettings.HEIGHT / 25;
+    private static final int BIRD_HEIGHT = WindowSettings.HEIGHT / 25;
+    private static final int INIT_X_POS = WindowSettings.WIDTH / 2 - (BIRD_WIDTH / 2 + WindowSettings.WIDTH / 3);
+    private static final int INIT_Y_POS = WindowSettings.HEIGHT / 2 - BIRD_HEIGHT / 2;
 
     private Bird()
     {

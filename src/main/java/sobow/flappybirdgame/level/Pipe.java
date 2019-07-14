@@ -5,9 +5,8 @@ import sobow.flappybirdgame.settings.WindowSettings;
 
 public class Pipe extends Rectangle
 {
-    private static final WindowSettings WINDOW_SETTINGS = WindowSettings.getInstance();
 
-    private static final int WIDTH = WINDOW_SETTINGS.getWINDOW_WIDTH() / 12;
+    private static final int WIDTH = WindowSettings.WIDTH / 12;
 
     public Pipe(int x, int y, int height)
     {

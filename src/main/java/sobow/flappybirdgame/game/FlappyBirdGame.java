@@ -24,7 +24,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private long ticks = 0;
     private Timer timer = new Timer(20, this);
     private Bird bird = Bird.getInstance();
-    private WindowSettings windowSettings = WindowSettings.getInstance();
     private Random randomGenerator = new Random();
 
     private List<Pipe> bottomPipes = new ArrayList<>();
@@ -40,12 +39,12 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
     private int playerScore = 0;
 
-    private final int GROUND_HEIGHT = windowSettings.getWINDOW_HEIGHT() / 6;
-    private final int GRASS_HEIGHT = windowSettings.getWINDOW_HEIGHT() / 50;
-    private final int DISTANCE_BETWEEN_TOP_AND_GROUND = windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT;
+    private final int GROUND_HEIGHT = WindowSettings.HEIGHT / 6;
+    private final int GRASS_HEIGHT = WindowSettings.HEIGHT / 50;
+    private final int DISTANCE_BETWEEN_TOP_AND_GROUND = WindowSettings.HEIGHT - GROUND_HEIGHT;
 
     private final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
-    private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = (int) ((windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT) / 1.5);
+    private final int MAXIMUM_BOTTOM_PIPE_HEIGHT = (int) ((WindowSettings.HEIGHT - GROUND_HEIGHT) / 1.5);
 
     private final int GAP_BETWEEN_TWO_PIPES = 100;
     private final int GAP_BETWEEN_PAIR_OF_PIPES = 400;
@@ -111,7 +110,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         int x = 0;
         int quantityOfPipePairs = 0;
-        while (x < windowSettings.getWINDOW_WIDTH())
+        while (x < WindowSettings.WIDTH)
         {
             x += Pipe.getWIDTH() + GAP_BETWEEN_PAIR_OF_PIPES;
             quantityOfPipePairs++;
@@ -127,24 +126,22 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         if (bottomPipes.isEmpty() && topPipes.isEmpty())
         {
             bottomPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
-                                     windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT,
+                                     WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT,
                                      bottomPipeHeight));
 
             topPipes.add(new Pipe(bird.x + INIT_DISTANCE_BETWEEN_BIRD_AND_PIPES,
-                                  0,
-                                  windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT
-                                  - GAP_BETWEEN_TWO_PIPES));
+                                  0, WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT
+                                     - GAP_BETWEEN_TWO_PIPES));
         }
         else
         {
             bottomPipes.add(new Pipe(bottomPipes.get(bottomPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
-                                     windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT,
+                                     WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT,
                                      bottomPipeHeight));
 
             topPipes.add(new Pipe(topPipes.get(topPipes.size() - 1).x + GAP_BETWEEN_PAIR_OF_PIPES,
-                                  0,
-                                  windowSettings.getWINDOW_HEIGHT() - bottomPipeHeight - GROUND_HEIGHT
-                                  - GAP_BETWEEN_TWO_PIPES));
+                                  0, WindowSettings.HEIGHT - bottomPipeHeight - GROUND_HEIGHT
+                                     - GAP_BETWEEN_TWO_PIPES));
         }
     }
 
@@ -221,15 +218,15 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         // Paint background
         g.setColor(BACKGROUND_COLOR);
-        g.fillRect(0, 0, windowSettings.getWINDOW_WIDTH(), windowSettings.getWINDOW_HEIGHT());
+        g.fillRect(0, 0, WindowSettings.WIDTH, WindowSettings.HEIGHT);
 
         // Paint ground
         g.setColor(SOIL_COLOR);
-        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, windowSettings.getWINDOW_WIDTH(), GROUND_HEIGHT);
+        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, WindowSettings.WIDTH, GROUND_HEIGHT);
 
         // Paint grass
         g.setColor(GRASS_COLOR);
-        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, windowSettings.getWINDOW_WIDTH(), GRASS_HEIGHT);
+        g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, WindowSettings.WIDTH, GRASS_HEIGHT);
 
         // Paint bird
         g.setColor(birdAlive == true ? BIRD_COLOR : DEAD_BIRD_COLOR);
@@ -248,11 +245,11 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         if (timer.isRunning() == false)
         {
             g.drawString("Press space bar to " + (ticks != 0 ? "re" : "") + "start!",
-                         windowSettings.getWINDOW_WIDTH() / 4,
-                         windowSettings.getWINDOW_HEIGHT() / 3);
+                         WindowSettings.WIDTH / 4,
+                         WindowSettings.HEIGHT / 3);
         }
         // score info
-        g.drawString("Score: " + playerScore, 50, windowSettings.getWINDOW_HEIGHT() - GROUND_HEIGHT / 2);
+        g.drawString("Score: " + playerScore, 50, WindowSettings.HEIGHT - GROUND_HEIGHT / 2);
     }
 
     @Override
