@@ -1,20 +1,29 @@
 package sobow.flappybirdgame.level;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Rectangle;
-import sobow.flappybirdgame.settings.WindowSettings;
+import java.awt.event.KeyEvent;
 
 public class Bird extends Rectangle
 {
+    private static final int WIDTH = 20;
+    private static final int HEIGHT = 20;
+    private static final int INIT_X_POS = 100;
+    private static final int INIT_Y_POS = 200;
+    private static final int BOOST_FACTOR = -7; // This value describe how much upwards bird will fly after player press the key
+
     private static Bird instance;
 
-    private static final int BIRD_WIDTH = WindowSettings.HEIGHT / 25;
-    private static final int BIRD_HEIGHT = WindowSettings.HEIGHT / 25;
-    private static final int INIT_X_POS = WindowSettings.WIDTH / 2 - (BIRD_WIDTH / 2 + WindowSettings.WIDTH / 3);
-    private static final int INIT_Y_POS = WindowSettings.HEIGHT / 2 - BIRD_HEIGHT / 2;
+    private float dy; // derivative y axis coordinate
+    private boolean isCollided = false;
+    private final Color BIRD_COLOR = Color.black;
+    private final Color BIRD_COLOR_AFTER_COLLISION = Color.RED.darker().darker();
+
 
     private Bird()
     {
-        super(INIT_X_POS, INIT_Y_POS, BIRD_WIDTH, BIRD_HEIGHT);
+        super(INIT_X_POS, INIT_Y_POS, WIDTH, HEIGHT);
     }
 
     public static Bird getInstance()
@@ -36,13 +45,17 @@ public class Bird extends Rectangle
         }
     }
 
-    public static void resetBirdPosition()
+    public void reset()
     {
-        if (instance != null)
-        {
-            instance.x = INIT_X_POS;
-            instance.y = INIT_Y_POS;
-        }
+        dy = 0;
+        instance.x = INIT_X_POS;
+        instance.y = INIT_Y_POS;
+    }
+
+    public void paint(Graphics g)
+    {
+        g.setColor(isCollided ? BIRD_COLOR_AFTER_COLLISION : BIRD_COLOR);
+        g.fillRect(x, y, width, height);
     }
 
     public boolean isBetweenFrontPipesHorizontally(Pipe frontBottomPipe)
@@ -50,4 +63,38 @@ public class Bird extends Rectangle
         return x > frontBottomPipe.x && x <= frontBottomPipe.x + Pipe.getWIDTH();
     }
 
+    public void keyPressed(KeyEvent e)
+    {
+        int key = e.getKeyCode();
+        if (key == KeyEvent.VK_SPACE)
+        {
+            dy = BOOST_FACTOR;
+        }
+    }
+
+    public void update()
+    {
+        accelerateFall();
+        fall();
+    }
+
+    public boolean isCollided()
+    {
+        return isCollided;
+    }
+
+    public void setCollided(boolean collided)
+    {
+        isCollided = collided;
+    }
+
+    private void accelerateFall()
+    {
+        dy += 0.4;
+    }
+
+    private void fall()
+    {
+        y += dy;
+    }
 }

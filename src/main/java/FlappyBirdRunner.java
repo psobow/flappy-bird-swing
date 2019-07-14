@@ -8,3 +8,7 @@ public class FlappyBirdRunner
         EventQueue.invokeLater(RenderGameRelationInitializator::new);
     }
 }
+
+/*
+TODO: utworzyć klase ScoreResolver i przenieść tam odpowiedzialnośc podliczania punktów
+ */

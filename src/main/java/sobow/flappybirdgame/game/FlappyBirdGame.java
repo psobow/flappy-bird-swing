@@ -23,10 +23,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private Bird bird = Bird.getInstance();
     private PipesManager pipesManager = PipesManager.getInstance();
 
-    private int yAxisBirdMotionFactor = 0;
-
-    private boolean birdAlive = true;
-
     private boolean collisionWithTop = false;
     private boolean collisionWithBottom = false;
     private boolean collisionWithPipes = false;
@@ -36,21 +32,12 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private final int GROUND_HEIGHT = WindowSettings.HEIGHT / 6;
     private final int GRASS_HEIGHT = WindowSettings.HEIGHT / 50;
     private final int DISTANCE_BETWEEN_TOP_AND_GROUND = WindowSettings.HEIGHT - GROUND_HEIGHT;
-
-
-    private final int BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS = 1;
-
-    private final int MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR = 10;
-    private final int MINIMUM_NEGATIVE_VALUE_OF_BIRD_MOTION_FACTOR = -5;
-
     private final int INFORMATION_FONT_SIZE = 35;
 
 
     private final Color BACKGROUND_COLOR = Color.GRAY;
     private final Color SOIL_COLOR = Color.ORANGE.darker().darker();
     private final Color GRASS_COLOR = Color.GREEN.darker().darker().darker();
-    private final Color BIRD_COLOR = Color.black;
-    private final Color DEAD_BIRD_COLOR = Color.RED.darker().darker();
     private final Color TEXT_COLOR = Color.BLACK;
 
     public static FlappyBirdGame getInstance()
@@ -95,14 +82,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
             playerScore++;
         }
 
-        // Simulate gravitational acceleration
-        if (ticks % 5 == 0 && yAxisBirdMotionFactor <= MAXIMUM_POSITIVE_VALUE_OF_BIRD_MOTION_FACTOR)
-        {
-            yAxisBirdMotionFactor += BIRD_ACCELERATION_PER_TEN_TICKS_ALONG_Y_AXIS;
-        }
-
-        // Bird motion
-        bird.y += yAxisBirdMotionFactor; // When yAxisBirdMotionFactor value is positive bird move downwards and move upwards if negative
+        bird.update();
 
         for (int i = 0; i < pipesManager.getQUANTITY_OF_PIPES_PAIRS(); i++)
         {
@@ -123,10 +103,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         collisionWithBottom = CollisionResolver.isBirdCollidingWithGround(bird, DISTANCE_BETWEEN_TOP_AND_GROUND);
         if (collisionWithTop || collisionWithBottom || collisionWithPipes)
         {
-            birdAlive = false;
-            // Repainting frame for change bird color after collision
-            renderPanelInstance.revalidate();
-            renderPanelInstance.repaint();
+            bird.setCollided(true);
             timer.stop();
         }
     }
@@ -145,11 +122,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         g.setColor(GRASS_COLOR);
         g.fillRect(0, DISTANCE_BETWEEN_TOP_AND_GROUND, WindowSettings.WIDTH, GRASS_HEIGHT);
 
-        // Paint bird
-        g.setColor(birdAlive == true ? BIRD_COLOR : DEAD_BIRD_COLOR);
-        g.fillRect(bird.x, bird.y, bird.width, bird.height);
+        bird.paint(g);
 
-        // Paint pipes
         pipesManager.paintPipes(g);
 
         // initial information
@@ -168,39 +142,32 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     @Override
     public void keyPressed(KeyEvent e)
     {
-        int keyID = e.getKeyCode();
-        switch (keyID)
+        boolean isTimerRunning = timer.isRunning();
+        int key = e.getKeyCode();
+        if (isTimerRunning && !bird.isCollided())
         {
-            case KeyEvent.VK_SPACE:
-                // Spacebar tap cause change yAxisBirdMotionFactor for negative value and will cause Bird flying gently upward.
-                if (timer.isRunning() && birdAlive)
-                {
-                    yAxisBirdMotionFactor = MINIMUM_NEGATIVE_VALUE_OF_BIRD_MOTION_FACTOR;
-                }
-                if (timer.isRunning() == false)
-                {
-                    resetGame();
-                }
-                break;
-            default:
-                break;
+            bird.keyPressed(e);
+        }
+        else if (!isTimerRunning && !bird.isCollided() && key == KeyEvent.VK_SPACE)
+        {
+            timer.start();
+        }
+        else if (!isTimerRunning && bird.isCollided() && key == KeyEvent.VK_SPACE)
+        {
+            resetGame();
         }
     }
 
     private void resetGame()
     {
-        if (birdAlive == false)
-        {
-            birdAlive = true;
-            ticks = 0;
-            yAxisBirdMotionFactor = 0;
-            playerScore = 0;
-            collisionWithPipes = false;
-            collisionWithBottom = false;
-            collisionWithTop = false;
-            Bird.resetBirdPosition(); // first we need to reset bird pos before setting up pipes again
-            pipesManager.addInitialPipes();
-        }
+        bird.setCollided(false);
+        ticks = 0;
+        playerScore = 0;
+        collisionWithPipes = false;
+        collisionWithBottom = false;
+        collisionWithTop = false;
+        bird.reset(); // first we need to reset bird pos before setting up pipes again
+        pipesManager.addInitialPipes();
 
         timer.start();
     }
