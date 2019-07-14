@@ -10,10 +10,10 @@ public class TextMessages
 {
     private static TextMessages instance;
 
-    private final Color COLOR = Color.BLACK;
-    private final int FONT_SIZE = 35;
-    private final int CONTROLS_MSG_Y_POS = 180;
-    private final int SCORE_MSG_Y_POS = 495;
+    private static final Color COLOR = Color.BLACK;
+    private static final int FONT_SIZE = 35;
+    private static final int CONTROLS_MSG_Y_POS = 180;
+    private static final int SCORE_MSG_Y_POS = 495;
 
     private TextMessages() {}
 

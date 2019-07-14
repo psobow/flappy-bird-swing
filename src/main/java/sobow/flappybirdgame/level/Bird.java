@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import sobow.flappybirdgame.level.PipesService.Pipe;
 
 public class Bird extends Rectangle
 {
@@ -12,6 +13,7 @@ public class Bird extends Rectangle
     private static final int INIT_X_POS = 100;
     private static final int INIT_Y_POS = 200;
     private static final int BOOST_FACTOR = -7; // This value describe how much upwards bird will fly after player press the key
+    private static final double EARTH_ACCELERATION = 0.4;
 
     private static Bird instance;
 
@@ -58,9 +60,9 @@ public class Bird extends Rectangle
         g.fillRect(x, y, width, height);
     }
 
-    public boolean isBetweenFrontPipesHorizontally(Pipe frontBottomPipe)
+    public boolean isBetweenHorizontally(Pipe pipe)
     {
-        return x > frontBottomPipe.x && x <= frontBottomPipe.x + frontBottomPipe.width;
+        return x + width >= pipe.x && x <= pipe.x + pipe.width;
     }
 
     public void keyPressed(KeyEvent e)
@@ -78,6 +80,47 @@ public class Bird extends Rectangle
         fall();
     }
 
+    public void resolveCollision(PipesService pipesService)
+    {
+        resolveCollisionWithTopWallAndGround();
+        if (!isCollided)
+        {
+            resolveCollisionWithPipes(pipesService);
+        }
+    }
+
+    private void resolveCollisionWithTopWallAndGround()
+    {
+        if (collisionWithTop() || collisionWithGround())
+        {
+            isCollided = true;
+        }
+    }
+
+    private void resolveCollisionWithPipes(PipesService pipesService)
+    {
+        if (isBetweenHorizontally(pipesService.getBottomPipeAt(0))
+            && !isBetweenVertically(pipesService.getBottomPipeAt(0), pipesService.getTopPipeAt(0)))
+        {
+            isCollided = true;
+        }
+    }
+
+    private boolean isBetweenVertically(Pipe bottomPipe, Pipe topPipe)
+    {
+        return y > topPipe.y + topPipe.height && y + height < bottomPipe.y;
+    }
+
+    private boolean collisionWithGround()
+    {
+        return y + height >= Ground.getDistanceBetweenTopWallAndGround();
+    }
+
+    private boolean collisionWithTop()
+    {
+        return y <= 0;
+    }
+
     public boolean isCollided()
     {
         return isCollided;
@@ -90,7 +133,7 @@ public class Bird extends Rectangle
 
     private void accelerateFall()
     {
-        dy += 0.4;
+        dy += EARTH_ACCELERATION;
     }
 
     private void fall()
