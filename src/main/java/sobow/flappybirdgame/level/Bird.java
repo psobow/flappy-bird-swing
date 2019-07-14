@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import sobow.flappybirdgame.level.PipesService.Pipe;
+import sobow.flappybirdgame.level.Pipes.Pipe;
 
 public class Bird extends Rectangle
 {
@@ -50,6 +50,7 @@ public class Bird extends Rectangle
     public void reset()
     {
         dy = 0;
+        isCollided = false;
         instance.x = INIT_X_POS;
         instance.y = INIT_Y_POS;
     }
@@ -80,13 +81,18 @@ public class Bird extends Rectangle
         fall();
     }
 
-    public void resolveCollision(PipesService pipesService)
+    public void resolveCollision(Pipes pipes)
     {
         resolveCollisionWithTopWallAndGround();
         if (!isCollided)
         {
-            resolveCollisionWithPipes(pipesService);
+            resolveCollisionWith(pipes);
         }
+    }
+
+    public boolean isCollided()
+    {
+        return isCollided;
     }
 
     private void resolveCollisionWithTopWallAndGround()
@@ -95,20 +101,6 @@ public class Bird extends Rectangle
         {
             isCollided = true;
         }
-    }
-
-    private void resolveCollisionWithPipes(PipesService pipesService)
-    {
-        if (isBetweenHorizontally(pipesService.getBottomPipeAt(0))
-            && !isBetweenVertically(pipesService.getBottomPipeAt(0), pipesService.getTopPipeAt(0)))
-        {
-            isCollided = true;
-        }
-    }
-
-    private boolean isBetweenVertically(Pipe bottomPipe, Pipe topPipe)
-    {
-        return y > topPipe.y + topPipe.height && y + height < bottomPipe.y;
     }
 
     private boolean collisionWithGround()
@@ -121,14 +113,18 @@ public class Bird extends Rectangle
         return y <= 0;
     }
 
-    public boolean isCollided()
+    private void resolveCollisionWith(Pipes pipes)
     {
-        return isCollided;
+        if (isBetweenHorizontally(pipes.getBottomPipeAt(0))
+            && !isBetweenVertically(pipes.getBottomPipeAt(0), pipes.getTopPipeAt(0)))
+        {
+            isCollided = true;
+        }
     }
 
-    public void setCollided(boolean collided)
+    private boolean isBetweenVertically(Pipe bottomPipe, Pipe topPipe)
     {
-        isCollided = collided;
+        return y > topPipe.y + topPipe.height && y + height < bottomPipe.y;
     }
 
     private void accelerateFall()

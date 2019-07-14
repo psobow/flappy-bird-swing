@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 import sobow.flappybirdgame.settings.WindowSettings;
 
-public class PipesService
+public class Pipes
 {
     class Pipe extends Rectangle
     {
@@ -28,7 +28,7 @@ public class PipesService
         }
     }
 
-    private static PipesService instance;
+    private static Pipes instance;
     private List<Pipe> bottomPipes = new ArrayList<>();
     private List<Pipe> topPipes = new ArrayList<>();
     private Random randomGenerator = new Random();
@@ -41,39 +41,34 @@ public class PipesService
     private static final int PIPES_SPEED = 4;
     private static final int QUANTITY_OF_PIPES_PAIRS = 3;
 
-    private PipesService() {}
+    private Pipes() {}
 
-    public static PipesService getInstance()
+    public static Pipes getInstance()
     {
         if (instance == null)
         {
-            synchronized (PipesService.class)
+            synchronized (Pipes.class)
             {
                 if (instance == null)
                 {
-                    instance = new PipesService();
+                    instance = new Pipes();
                 }
             }
         }
-        synchronized (PipesService.class)
+        synchronized (Pipes.class)
         {
             return instance;
         }
     }
 
-    public void initiate()
+    public void reset()
     {
-        reset();
+        bottomPipes.clear();
+        topPipes.clear();
         for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
         {
             addPair();
         }
-    }
-
-    private void reset()
-    {
-        bottomPipes.clear();
-        topPipes.clear();
     }
 
     public void addPair()
@@ -124,6 +119,16 @@ public class PipesService
         move();
     }
 
+    public Pipe getBottomPipeAt(int index)
+    {
+        return bottomPipes.get(index);
+    }
+
+    public Pipe getTopPipeAt(int index)
+    {
+        return topPipes.get(index);
+    }
+
     private void removeFrontPair()
     {
         bottomPipes.remove(0);
@@ -143,15 +148,5 @@ public class PipesService
             bottomPipes.get(i).x -= PIPES_SPEED;
             topPipes.get(i).x -= PIPES_SPEED;
         }
-    }
-
-    public Pipe getBottomPipeAt(int index)
-    {
-        return bottomPipes.get(index);
-    }
-
-    public Pipe getTopPipeAt(int index)
-    {
-        return topPipes.get(index);
     }
 }

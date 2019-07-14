@@ -8,6 +8,6 @@ public class RenderGameRelationInitializator
     public RenderGameRelationInitializator()
     {
         renderPanelInstance.setGameInstance(gameInstance);
-        gameInstance.setRenderPanelInstance(renderPanelInstance);
+        gameInstance.setRenderPanel(renderPanelInstance);
     }
 }

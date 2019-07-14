@@ -34,6 +34,7 @@ public class RenderPanel extends JPanel
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
+        revalidate();
         gameInstance.repaint(g);
     }
 

@@ -9,25 +9,25 @@ import java.awt.event.KeyListener;
 import javax.swing.Timer;
 import sobow.flappybirdgame.level.Bird;
 import sobow.flappybirdgame.level.Ground;
-import sobow.flappybirdgame.level.PipesService;
+import sobow.flappybirdgame.level.Pipes;
 import sobow.flappybirdgame.level.TextMessages;
 import sobow.flappybirdgame.settings.WindowSettings;
 
 public class FlappyBirdGame implements ActionListener, KeyListener
 {
     private static FlappyBirdGame instance;
-    private RenderPanel renderPanelInstance;
+    private RenderPanel renderPanel;
 
     private Timer timer = new Timer(20, this);
     private Bird bird = Bird.getInstance();
-    private PipesService pipesService = PipesService.getInstance();
+    private Pipes pipes = Pipes.getInstance();
     private Ground ground = Ground.getInstance();
     private TextMessages textMessages = TextMessages.getInstance();
 
     private int playerScore = 0;
     private int bestScore = 0;
 
-    private final Color BACKGROUND_COLOR = Color.GRAY;
+    private final Color BACKGROUND_COLOR = Color.GRAY.darker();
 
     public static FlappyBirdGame getInstance()
     {
@@ -51,18 +51,17 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         MainWindow gameFrame = new MainWindow();
         gameFrame.addKeyListener(this);
-        pipesService.initiate();
+        pipes.reset();
     }
 
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        renderPanelInstance.revalidate();
-        renderPanelInstance.repaint();
+        renderPanel.repaint();
 
-        boolean beforePipesUpdate = bird.isBetweenHorizontally(pipesService.getBottomPipeAt(0));
-        pipesService.update();
-        boolean afterPipesUpdate = bird.isBetweenHorizontally(pipesService.getBottomPipeAt(0));
+        boolean beforePipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
+        pipes.update();
+        boolean afterPipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
 
         if (beforePipesUpdate && !afterPipesUpdate)
         {
@@ -71,7 +70,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
         bird.update();
 
-        bird.resolveCollision(pipesService);
+        bird.resolveCollision(pipes);
 
         if (bird.isCollided())
         {
@@ -88,14 +87,8 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         paintBackground(g);
         ground.paint(g);
         bird.paint(g);
-        pipesService.paint(g);
+        pipes.paint(g);
         textMessages.paint(g, timer.isRunning(), bird.isCollided(), playerScore, bestScore);
-    }
-
-    private void paintBackground(Graphics g)
-    {
-        g.setColor(BACKGROUND_COLOR);
-        g.fillRect(0, 0, WindowSettings.WIDTH, WindowSettings.HEIGHT);
     }
 
     @Override
@@ -110,8 +103,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         else if (!isTimerRunning && bird.isCollided() && key == KeyEvent.VK_ENTER)
         {
             resetGame();
-            renderPanelInstance.revalidate();
-            renderPanelInstance.repaint();
+            renderPanel.repaint();
         }
         else if (!isTimerRunning && !bird.isCollided() && key == KeyEvent.VK_SPACE)
         {
@@ -120,22 +112,27 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         }
     }
 
-    private void resetGame()
-    {
-        bird.setCollided(false);
-        playerScore = 0;
-        bird.reset();
-        pipesService.initiate();
-    }
-
     @Override
     public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyReleased(KeyEvent e) {}
 
-    public void setRenderPanelInstance(RenderPanel renderPanelInstance)
+    private void resetGame()
     {
-        this.renderPanelInstance = renderPanelInstance;
+        playerScore = 0;
+        bird.reset();
+        pipes.reset();
+    }
+
+    private void paintBackground(Graphics g)
+    {
+        g.setColor(BACKGROUND_COLOR);
+        g.fillRect(0, 0, WindowSettings.WIDTH, WindowSettings.HEIGHT);
+    }
+
+    public void setRenderPanel(RenderPanel renderPanel)
+    {
+        this.renderPanel = renderPanel;
     }
 }
