@@ -4,16 +4,20 @@ package sobow.flappybirdgame.level;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import sobow.flappybirdgame.game.ScoreService;
 
 
 public class TextMessages
 {
-    private static TextMessages instance;
-
     private static final Color COLOR = Color.BLACK;
     private static final int FONT_SIZE = 35;
     private static final int CONTROLS_MSG_Y_POS = 180;
     private static final int SCORE_MSG_Y_POS = 495;
+
+    private static TextMessages instance;
+
+    private ScoreService scoreService = ScoreService.getInstance();
+    private Bird bird = Bird.getInstance();
 
     private TextMessages() {}
 
@@ -35,23 +39,23 @@ public class TextMessages
         }
     }
 
-    public void paint(Graphics g, boolean isTimerRunning, boolean isBirdCollided, int playerScore, int bestScore)
+    public void paint(Graphics g, boolean isTimerRunning)
     {
         g.setColor(COLOR);
         g.setFont(new Font("Arial", 1, FONT_SIZE));
         if (!isTimerRunning)
         {
-            paintControlsInfo(g, isBirdCollided);
+            paintControlsInfo(g);
         }
-        g.drawString("Score: " + playerScore, 50, SCORE_MSG_Y_POS);
-        g.drawString("Best score: " + bestScore, 650, SCORE_MSG_Y_POS);
+        g.drawString("Score: " + scoreService.getPlayerScore(), 50, SCORE_MSG_Y_POS);
+        g.drawString("Best score: " + scoreService.getBestScore(), 650, SCORE_MSG_Y_POS);
     }
 
-    private void paintControlsInfo(Graphics g, boolean isBirdCollided)
+    private void paintControlsInfo(Graphics g)
     {
         String message;
         int messageXPos;
-        if (!isBirdCollided)
+        if (!bird.isCollided())
         {
             message = "Press space bar to fly up and begin game";
             messageXPos = 120;

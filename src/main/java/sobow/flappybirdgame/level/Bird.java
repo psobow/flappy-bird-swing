@@ -21,11 +21,12 @@ public class Bird extends Rectangle
     private static Bird instance;
 
     private float dy; // derivative y axis coordinate
-    private boolean isCollided = false;
+    private boolean isCollided;
 
     private Bird()
     {
         super(INIT_X_POS, INIT_Y_POS, WIDTH, HEIGHT);
+        reset();
     }
 
     public static Bird getInstance()
@@ -51,8 +52,8 @@ public class Bird extends Rectangle
     {
         dy = 0;
         isCollided = false;
-        instance.x = INIT_X_POS;
-        instance.y = INIT_Y_POS;
+        x = INIT_X_POS;
+        y = INIT_Y_POS;
     }
 
     public void paint(Graphics g)
@@ -86,7 +87,7 @@ public class Bird extends Rectangle
         resolveCollisionWithTopWallAndGround();
         if (!isCollided)
         {
-            resolveCollisionWith(pipes);
+            resolveCollisionWithFront(pipes);
         }
     }
 
@@ -94,6 +95,7 @@ public class Bird extends Rectangle
     {
         return isCollided;
     }
+
 
     private void resolveCollisionWithTopWallAndGround()
     {
@@ -113,7 +115,7 @@ public class Bird extends Rectangle
         return y <= 0;
     }
 
-    private void resolveCollisionWith(Pipes pipes)
+    private void resolveCollisionWithFront(Pipes pipes)
     {
         if (isBetweenHorizontally(pipes.getBottomPipeAt(0))
             && !isBetweenVertically(pipes.getBottomPipeAt(0), pipes.getTopPipeAt(0)))

@@ -23,9 +23,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     private Pipes pipes = Pipes.getInstance();
     private Ground ground = Ground.getInstance();
     private TextMessages textMessages = TextMessages.getInstance();
-
-    private int playerScore = 0;
-    private int bestScore = 0;
+    private ScoreService scoreService = ScoreService.getInstance();
 
     private final Color BACKGROUND_COLOR = Color.GRAY.darker();
 
@@ -51,7 +49,6 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         MainWindow gameFrame = new MainWindow();
         gameFrame.addKeyListener(this);
-        pipes.reset();
     }
 
     @Override
@@ -59,25 +56,21 @@ public class FlappyBirdGame implements ActionListener, KeyListener
     {
         renderPanel.repaint();
 
-        boolean beforePipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
+        scoreService.examineBirdPositionBeforePipesUpdate();
         pipes.update();
-        boolean afterPipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
+        scoreService.examineBirdPositionAfterPipesUpdate();
 
-        if (beforePipesUpdate && !afterPipesUpdate)
+        if (scoreService.birdPassedFrontPipes())
         {
-            playerScore++;
+            scoreService.scorePlayer();
         }
 
         bird.update();
-
         bird.resolveCollision(pipes);
 
         if (bird.isCollided())
         {
-            if (playerScore > bestScore)
-            {
-                bestScore = playerScore;
-            }
+            scoreService.updateBestScore();
             timer.stop();
         }
     }
@@ -88,7 +81,7 @@ public class FlappyBirdGame implements ActionListener, KeyListener
         ground.paint(g);
         bird.paint(g);
         pipes.paint(g);
-        textMessages.paint(g, timer.isRunning(), bird.isCollided(), playerScore, bestScore);
+        textMessages.paint(g, timer.isRunning());
     }
 
     @Override
@@ -120,9 +113,9 @@ public class FlappyBirdGame implements ActionListener, KeyListener
 
     private void resetGame()
     {
-        playerScore = 0;
         bird.reset();
         pipes.reset();
+        scoreService.reset();
     }
 
     private void paintBackground(Graphics g)

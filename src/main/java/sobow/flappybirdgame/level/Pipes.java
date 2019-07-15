@@ -13,9 +13,15 @@ public class Pipes
 {
     class Pipe extends Rectangle
     {
-        public Pipe(int x, int y, int width, int height)
+        Pipe(int x, int y, int width, int height)
         {
             super(x, y, width, height);
+        }
+
+        void paint(Graphics g)
+        {
+            g.setColor(COLOR);
+            g.fillRect(x, y, width, height);
         }
     }
 
@@ -23,10 +29,10 @@ public class Pipes
     private static final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
     private static final int MAXIMUM_BOTTOM_PIPE_HEIGHT = 300;
     private static final int GAP_BETWEEN_PIPES = 150;
-    private static final int DISTANCE_BETWEEN_PAIR_OF_PIPES = 400;
+    private static final int DISTANCE_BETWEEN_PAIR_OF_PIPES = 300;
     private static final int FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION = 700;
     private static final int PIPES_SPEED = 4;
-    private static final int QUANTITY_OF_PIPES_PAIRS = 3;
+    private static final int QUANTITY_OF_PIPES_PAIRS = 4;
 
     private final Color COLOR = Color.magenta.darker().darker().darker().darker();
 
@@ -36,7 +42,10 @@ public class Pipes
     private List<Pipe> topPipes = new ArrayList<>();
     private Random randomGenerator = new Random();
 
-    private Pipes() {}
+    private Pipes()
+    {
+        reset();
+    }
 
     public static Pipes getInstance()
     {
@@ -68,9 +77,8 @@ public class Pipes
 
     public void addPair()
     {
-        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(
-                MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT);
-
+        int bound = MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT;
+        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(bound);
         int leftSideHorizontalCoordinate = (bottomPipes.isEmpty() && topPipes.isEmpty()
                                             ? FIRST_PAIR_OF_PIPES_HORIZONTAL_POSITION
                                             : bottomPipes.get(bottomPipes.size() - 1).x
@@ -92,9 +100,8 @@ public class Pipes
     {
         for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
         {
-            g.setColor(COLOR);
-            g.fillRect(bottomPipes.get(i).x, bottomPipes.get(i).y, bottomPipes.get(i).width, bottomPipes.get(i).height);
-            g.fillRect(topPipes.get(i).x, topPipes.get(i).y, topPipes.get(i).width, topPipes.get(i).height);
+            bottomPipes.get(i).paint(g);
+            topPipes.get(i).paint(g);
         }
     }
 
@@ -117,6 +124,7 @@ public class Pipes
     {
         return topPipes.get(index);
     }
+
 
     private void removeFrontPair()
     {
