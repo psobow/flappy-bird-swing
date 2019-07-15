@@ -13,16 +13,16 @@ public class TextMessages
 
     private static final int FONT_SIZE = 35;
     private static final int CONTROLS_MSG_Y_POS = 180;
+    private static final int SCORE_MSG_X_POS = 50;
+    private static final int BEST_SCORE_MSG_X_POS = 650;
     private static final int SCORE_MSG_Y_POS = 495;
 
     private static TextMessages instance;
 
-    private ScoreService scoreService;
     private Bird bird;
 
     private TextMessages()
     {
-        scoreService = ScoreService.getInstance();
         bird = Bird.getInstance();
     }
 
@@ -52,8 +52,8 @@ public class TextMessages
         {
             paintControlsInfo(g);
         }
-        g.drawString("Score: " + scoreService.getPlayerScore(), 50, SCORE_MSG_Y_POS);
-        g.drawString("Best score: " + scoreService.getBestScore(), 650, SCORE_MSG_Y_POS);
+        g.drawString("Score: " + ScoreService.getPlayerScore(), SCORE_MSG_X_POS, SCORE_MSG_Y_POS);
+        g.drawString("Best score: " + ScoreService.getBestScore(), BEST_SCORE_MSG_X_POS, SCORE_MSG_Y_POS);
     }
 
     private void paintControlsInfo(Graphics g)

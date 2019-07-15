@@ -5,68 +5,43 @@ import sobow.flappybirdgame.level.Pipes;
 
 public class ScoreService
 {
-    private static ScoreService instance;
+    private static Bird bird = Bird.getInstance();
+    private static Pipes pipes = Pipes.getInstance();
 
-    private Bird bird;
-    private Pipes pipes;
+    private static int playerScore;
+    private static int bestScore;
+    private static boolean beforePipesUpdate;
+    private static boolean afterPipesUpdate;
 
-    private int playerScore;
-    private int bestScore;
-    private boolean beforePipesUpdate;
-    private boolean afterPipesUpdate;
+    private ScoreService() {}
 
-    private ScoreService()
-    {
-        bird = Bird.getInstance();
-        pipes = Pipes.getInstance();
-        playerScore = 0;
-        bestScore = 0;
-    }
 
-    public static ScoreService getInstance()
-    {
-        if (instance == null)
-        {
-            synchronized (ScoreService.class)
-            {
-                if (instance == null)
-                {
-                    instance = new ScoreService();
-                }
-            }
-        }
-        synchronized (ScoreService.class)
-        {
-            return instance;
-        }
-    }
-
-    public void examineBirdPositionBeforePipesUpdate()
+    public static void examineBirdPositionBeforePipesUpdate()
     {
         beforePipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
     }
 
-    public void examineBirdPositionAfterPipesUpdate()
+    public static void examineBirdPositionAfterPipesUpdate()
     {
         afterPipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
     }
 
-    public boolean birdPassedFrontPipes()
+    public static boolean birdPassedFrontPipes()
     {
         return beforePipesUpdate && !afterPipesUpdate;
     }
 
-    public void scorePlayer()
+    public static void scorePlayer()
     {
         playerScore++;
     }
 
-    public void reset()
+    public static void reset()
     {
         playerScore = 0;
     }
 
-    public void updateBestScore()
+    public static void updateBestScore()
     {
         if (playerScore > bestScore)
         {
@@ -74,12 +49,12 @@ public class ScoreService
         }
     }
 
-    public int getPlayerScore()
+    public static int getPlayerScore()
     {
         return playerScore;
     }
 
-    public int getBestScore()
+    public static int getBestScore()
     {
         return bestScore;
     }

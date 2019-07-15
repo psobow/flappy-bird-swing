@@ -22,7 +22,6 @@ public class BoardFlappyBird extends JPanel implements ActionListener
     private Pipes pipes;
     private Ground ground;
     private TextMessages textMessages;
-    private ScoreService scoreService;
 
     public static BoardFlappyBird getInstance()
     {
@@ -57,7 +56,6 @@ public class BoardFlappyBird extends JPanel implements ActionListener
         pipes = Pipes.getInstance();
         ground = Ground.getInstance();
         textMessages = TextMessages.getInstance();
-        scoreService = ScoreService.getInstance();
     }
 
     @Override
@@ -74,13 +72,13 @@ public class BoardFlappyBird extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        scoreService.examineBirdPositionBeforePipesUpdate();
+        ScoreService.examineBirdPositionBeforePipesUpdate();
         pipes.update();
-        scoreService.examineBirdPositionAfterPipesUpdate();
+        ScoreService.examineBirdPositionAfterPipesUpdate();
 
-        if (scoreService.birdPassedFrontPipes())
+        if (ScoreService.birdPassedFrontPipes())
         {
-            scoreService.scorePlayer();
+            ScoreService.scorePlayer();
         }
 
         bird.update();
@@ -88,7 +86,7 @@ public class BoardFlappyBird extends JPanel implements ActionListener
 
         if (bird.isCollided())
         {
-            scoreService.updateBestScore();
+            ScoreService.updateBestScore();
             timer.stop();
         }
         repaint();
@@ -122,6 +120,6 @@ public class BoardFlappyBird extends JPanel implements ActionListener
     {
         bird.reset();
         pipes.reset();
-        scoreService.reset();
+        ScoreService.reset();
     }
 }

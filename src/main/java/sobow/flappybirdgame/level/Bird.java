@@ -8,8 +8,8 @@ import sobow.flappybirdgame.level.Pipes.Pipe;
 
 public class Bird extends Rectangle
 {
-    private static final Color BIRD_COLOR = Color.black;
-    private static final Color BIRD_COLOR_AFTER_COLLISION = Color.RED.darker().darker();
+    private static final Color COLOR = Color.black;
+    private static final Color AFTER_COLLISION = Color.RED.darker().darker();
 
     private static final int WIDTH = 20;
     private static final int HEIGHT = 20;
@@ -58,7 +58,7 @@ public class Bird extends Rectangle
 
     public void paint(Graphics g)
     {
-        g.setColor(isCollided ? BIRD_COLOR_AFTER_COLLISION : BIRD_COLOR);
+        g.setColor(isCollided ? AFTER_COLLISION : COLOR);
         g.fillRect(x, y, width, height);
     }
 
