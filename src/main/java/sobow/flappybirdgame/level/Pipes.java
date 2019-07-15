@@ -28,15 +28,19 @@ public class Pipes
 
     private static final Color COLOR = Color.magenta.darker().darker().darker().darker();
 
-    private static final int PIPE_WIDTH = 100;
+    private static final int MINIMAL_PIPE_WIDTH = 50;
+    private static final int MAXIMUM_PIPE_WIDTH = 150;
     private static final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
     private static final int MAXIMUM_BOTTOM_PIPE_HEIGHT = 300;
-    private static final int GAP_BETWEEN_PIPES = 200;
+
+    private static final int GAP_BETWEEN_PIPES = 120;
     private static final int FIRST_PAIR_OF_PIPES_X_POS = 700;
-    private static final int QUANTITY_OF_PIPES_PAIRS = 4;
-    private static final int INIT_DISTANCE_BETWEEN_PAIR_OF_PIPES = 300;
-    private static final int INIT_PIPES_SPEED = 4;
-    private static final int INIT_REQUIRED_SCORE_FOR_ACCELERATION = 5;
+    private static final int QUANTITY_OF_PIPES_PAIRS_PER_FRAME = 5;
+    private static final int INIT_DISTANCE_BETWEEN_PAIR_OF_PIPES = 250;
+    private static final int INIT_REQUIRED_SCORE_FOR_ACCELERATION = 15;
+    private static final int ADDITIONAL_DISTANCE = 30;
+
+    private static final double INIT_PIPES_SPEED = 2.5;
     private static final double ACCELERATION_FACTOR = 0.5;
 
     private static Pipes instance;
@@ -45,7 +49,8 @@ public class Pipes
     private List<Pipe> topPipes;
     private Random randomGenerator;
 
-    private float pipesSpeed;
+    private double pipesSpeed;
+    private int distanceBetweenPairOfPipes;
     private int requiredScoreForAcceleration;
 
     private Pipes()
@@ -74,29 +79,30 @@ public class Pipes
         }
     }
 
-    public void addPair()
+    public void addNewPair()
     {
-        int bound = MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT;
-        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(bound);
-        int leftSideHorizontalCoordinate = (bottomPipes.isEmpty() && topPipes.isEmpty() ? FIRST_PAIR_OF_PIPES_X_POS
-                                                                                        : bottomPipes.get(bottomPipes.size() - 1).x
-                                                                                          + INIT_DISTANCE_BETWEEN_PAIR_OF_PIPES);
+        int boundHeight = MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT;
+        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(boundHeight);
+
+        int boundWidth = MAXIMUM_PIPE_WIDTH - MINIMAL_PIPE_WIDTH;
+        int pipeWidth = MINIMAL_PIPE_WIDTH + randomGenerator.nextInt(boundWidth);
+
+        int leftSideHorizontalCoordinate = (bottomPipes.isEmpty() && topPipes.isEmpty() ? FIRST_PAIR_OF_PIPES_X_POS :
+                                            bottomPipes.get(bottomPipes.size() - 1).x + distanceBetweenPairOfPipes);
 
         bottomPipes.add(new Pipe(leftSideHorizontalCoordinate,
-                                 WindowSettings.HEIGHT - bottomPipeHeight - Ground.getGroundHeight(),
-                                 PIPE_WIDTH,
+                                 WindowSettings.HEIGHT - bottomPipeHeight - Ground.getGroundHeight(), pipeWidth,
                                  bottomPipeHeight));
 
         topPipes.add(new Pipe(leftSideHorizontalCoordinate,
-                              0,
-                              PIPE_WIDTH,
+                              0, pipeWidth,
                               WindowSettings.HEIGHT - bottomPipeHeight - Ground.getGroundHeight() - GAP_BETWEEN_PIPES));
 
     }
 
     public void paint(Graphics g)
     {
-        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
+        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS_PER_FRAME; i++)
         {
             bottomPipes.get(i).paint(g);
             topPipes.get(i).paint(g);
@@ -108,7 +114,7 @@ public class Pipes
         move();
         if (frontPairDisappeared())
         {
-            addPair();
+            addNewPair();
             removeFrontPair();
         }
 
@@ -116,7 +122,7 @@ public class Pipes
         {
             pipesSpeed += ACCELERATION_FACTOR; // accelerate pipes
             requiredScoreForAcceleration *= 2; // double required score for acceleration
-            System.out.println("speed:" + pipesSpeed + "  score:" + ScoreService.getPlayerScore());
+            distanceBetweenPairOfPipes += ADDITIONAL_DISTANCE;
         }
     }
 
@@ -132,10 +138,11 @@ public class Pipes
         topPipes.clear();
         pipesSpeed = INIT_PIPES_SPEED;
         requiredScoreForAcceleration = INIT_REQUIRED_SCORE_FOR_ACCELERATION;
+        distanceBetweenPairOfPipes = INIT_DISTANCE_BETWEEN_PAIR_OF_PIPES;
 
-        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
+        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS_PER_FRAME; i++)
         {
-            addPair();
+            addNewPair();
         }
     }
 
@@ -163,12 +170,17 @@ public class Pipes
 
     private void move()
     {
-        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
+        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS_PER_FRAME; i++)
         {
             // Simulate motion of bird along X axis by moving pair of pipes towards left frame side.
             bottomPipes.get(i).x = (int) Math.floor(bottomPipes.get(i).x - pipesSpeed);
             topPipes.get(i).x = (int) Math.floor(topPipes.get(i).x - pipesSpeed);
         }
+    }
+
+    public int getQuantityOfPairs()
+    {
+        return QUANTITY_OF_PIPES_PAIRS_PER_FRAME;
     }
 
 }

@@ -87,7 +87,7 @@ public class Bird extends Rectangle
         resolveCollisionWithTopWallAndGround();
         if (!isCollided)
         {
-            resolveCollisionWithFront(pipes);
+            resolveCollisionWithHalfOf(pipes);
         }
     }
 
@@ -115,12 +115,15 @@ public class Bird extends Rectangle
         return y <= 0;
     }
 
-    private void resolveCollisionWithFront(Pipes pipes)
+    private void resolveCollisionWithHalfOf(Pipes pipes)
     {
-        if (isBetweenHorizontally(pipes.getBottomPipeAt(0))
-            && !isBetweenVertically(pipes.getBottomPipeAt(0), pipes.getTopPipeAt(0)))
+        for (int i = 0; i < pipes.getQuantityOfPairs() / 2; i++)
         {
-            isCollided = true;
+            if (isBetweenHorizontally(pipes.getBottomPipeAt(i)) && !isBetweenVertically(pipes.getBottomPipeAt(i),
+                                                                                        pipes.getTopPipeAt(i)))
+            {
+                isCollided = true;
+            }
         }
     }
 
