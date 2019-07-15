@@ -10,16 +10,21 @@ import sobow.flappybirdgame.game.ScoreService;
 public class TextMessages
 {
     private static final Color COLOR = Color.BLACK;
+
     private static final int FONT_SIZE = 35;
     private static final int CONTROLS_MSG_Y_POS = 180;
     private static final int SCORE_MSG_Y_POS = 495;
 
     private static TextMessages instance;
 
-    private ScoreService scoreService = ScoreService.getInstance();
-    private Bird bird = Bird.getInstance();
+    private ScoreService scoreService;
+    private Bird bird;
 
-    private TextMessages() {}
+    private TextMessages()
+    {
+        scoreService = ScoreService.getInstance();
+        bird = Bird.getInstance();
+    }
 
     public static TextMessages getInstance()
     {

@@ -1,17 +1,16 @@
 import java.awt.EventQueue;
-import sobow.flappybirdgame.game.RenderGameRelationInitializator;
+import sobow.flappybirdgame.game.MainWindow;
 
 public class FlappyBirdRunner
 {
     public static void main(String[] args)
     {
-        EventQueue.invokeLater(RenderGameRelationInitializator::new);
+        EventQueue.invokeLater(() -> new MainWindow());
     }
 }
 
 /*
-TODO: utworzyć klase ScoreResolver i przenieść tam odpowiedzialnośc podliczania punktów
-TODO: przenieść render panel do flappy bird game, może tez klase mainWindow przenieść
+
 TODO: zaimplementować zwięszkaszenie się prędkości
 TODO: zaimplementować losowe szerokości rur
  */

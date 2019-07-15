@@ -8,15 +8,15 @@ import sobow.flappybirdgame.level.Pipes.Pipe;
 
 public class Bird extends Rectangle
 {
+    private static final Color BIRD_COLOR = Color.black;
+    private static final Color BIRD_COLOR_AFTER_COLLISION = Color.RED.darker().darker();
+
     private static final int WIDTH = 20;
     private static final int HEIGHT = 20;
     private static final int INIT_X_POS = 100;
     private static final int INIT_Y_POS = 200;
     private static final int BOOST_FACTOR = -7; // This value describe how much upwards bird will fly after player press the key
     private static final double EARTH_ACCELERATION = 0.4;
-
-    private static final Color BIRD_COLOR = Color.black;
-    private static final Color BIRD_COLOR_AFTER_COLLISION = Color.RED.darker().darker();
 
     private static Bird instance;
 

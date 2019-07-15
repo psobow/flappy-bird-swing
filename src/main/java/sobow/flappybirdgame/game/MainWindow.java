@@ -8,12 +8,17 @@ public class MainWindow extends JFrame
 {
     public MainWindow()
     {
-        add(RenderPanel.getInstance());
+        initUI();
+    }
+
+    private void initUI()
+    {
+        add(BoardFlappyBird.getInstance());
         setTitle(WindowSettings.TITLE);
         setSize(WindowSettings.WIDTH, WindowSettings.HEIGHT);
-        setLocationRelativeTo(null);
-        setResizable(WindowSettings.IS_RESIZABLE);
+        setLocationRelativeTo(null); // center window
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(WindowSettings.IS_VISIBLE);
+        setVisible(true);
     }
 }

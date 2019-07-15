@@ -7,12 +7,12 @@ import sobow.flappybirdgame.settings.WindowSettings;
 
 public class Ground extends Rectangle
 {
+    private static final Color SOIL_COLOR = Color.ORANGE.darker().darker();
+    private static final Color GRASS_COLOR = Color.GREEN.darker().darker().darker();
+
     private static final int DISTANCE_BETWEEN_TOP_WALL_AND_GROUND = 450;
     private static final int GROUND_HEIGHT = 90;
     private static final int GRASS_HEIGHT = 10;
-
-    private static final Color SOIL_COLOR = Color.ORANGE.darker().darker();
-    private static final Color GRASS_COLOR = Color.GREEN.darker().darker().darker();
 
     private static Ground instance;
 

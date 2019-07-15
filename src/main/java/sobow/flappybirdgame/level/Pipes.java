@@ -25,6 +25,8 @@ public class Pipes
         }
     }
 
+    private static final Color COLOR = Color.magenta.darker().darker().darker().darker();
+
     private static final int PIPE_WIDTH = 100;
     private static final int MINIMAL_BOTTOM_PIPE_HEIGHT = 50;
     private static final int MAXIMUM_BOTTOM_PIPE_HEIGHT = 300;
@@ -34,17 +36,21 @@ public class Pipes
     private static final int PIPES_SPEED = 4;
     private static final int QUANTITY_OF_PIPES_PAIRS = 4;
 
-    private final Color COLOR = Color.magenta.darker().darker().darker().darker();
-
     private static Pipes instance;
 
-    private List<Pipe> bottomPipes = new ArrayList<>();
-    private List<Pipe> topPipes = new ArrayList<>();
-    private Random randomGenerator = new Random();
+    private List<Pipe> bottomPipes;
+    private List<Pipe> topPipes;
+    private Random randomGenerator;
 
     private Pipes()
     {
-        reset();
+        bottomPipes = new ArrayList<>();
+        topPipes = new ArrayList<>();
+        randomGenerator = new Random();
+        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
+        {
+            addPair();
+        }
     }
 
     public static Pipes getInstance()
@@ -62,16 +68,6 @@ public class Pipes
         synchronized (Pipes.class)
         {
             return instance;
-        }
-    }
-
-    public void reset()
-    {
-        bottomPipes.clear();
-        topPipes.clear();
-        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
-        {
-            addPair();
         }
     }
 
@@ -115,6 +111,16 @@ public class Pipes
         move();
     }
 
+    public void reset()
+    {
+        bottomPipes.clear();
+        topPipes.clear();
+        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS; i++)
+        {
+            addPair();
+        }
+    }
+
     public Pipe getBottomPipeAt(int index)
     {
         return bottomPipes.get(index);
@@ -146,4 +152,5 @@ public class Pipes
             topPipes.get(i).x -= PIPES_SPEED;
         }
     }
+
 }
