@@ -7,12 +7,12 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import sobow.flappybirdgame.game.ScoreService;
+import sobow.flappybirdgame.services.ScoreService;
 import sobow.flappybirdgame.settings.WindowSettings;
 
 public class Pipes
 {
-    class Pipe extends Rectangle
+    public class Pipe extends Rectangle
     {
         private Pipe(int x, int y, int width, int height)
         {
@@ -61,6 +61,20 @@ public class Pipes
         reset();
     }
 
+    public void reset()
+    {
+        bottomPipes.clear();
+        topPipes.clear();
+        pipesSpeed = INIT_PIPES_SPEED;
+        requiredScoreForAcceleration = INIT_REQUIRED_SCORE_FOR_ACCELERATION;
+        distanceBetweenPairOfPipes = INIT_DISTANCE_BETWEEN_PAIR_OF_PIPES;
+
+        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS_PER_FRAME; i++)
+        {
+            addNewPair();
+        }
+    }
+
     public static Pipes getInstance()
     {
         if (instance == null)
@@ -77,27 +91,6 @@ public class Pipes
         {
             return instance;
         }
-    }
-
-    public void addNewPair()
-    {
-        int boundHeight = MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT;
-        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(boundHeight);
-
-        int boundWidth = MAXIMUM_PIPE_WIDTH - MINIMAL_PIPE_WIDTH;
-        int pipeWidth = MINIMAL_PIPE_WIDTH + randomGenerator.nextInt(boundWidth);
-
-        int leftSideHorizontalCoordinate = (bottomPipes.isEmpty() && topPipes.isEmpty() ? FIRST_PAIR_OF_PIPES_X_POS :
-                                            bottomPipes.get(bottomPipes.size() - 1).x + distanceBetweenPairOfPipes);
-
-        bottomPipes.add(new Pipe(leftSideHorizontalCoordinate,
-                                 WindowSettings.HEIGHT - bottomPipeHeight - Ground.getGroundHeight(), pipeWidth,
-                                 bottomPipeHeight));
-
-        topPipes.add(new Pipe(leftSideHorizontalCoordinate,
-                              0, pipeWidth,
-                              WindowSettings.HEIGHT - bottomPipeHeight - Ground.getGroundHeight() - GAP_BETWEEN_PIPES));
-
     }
 
     public void paint(Graphics g)
@@ -120,29 +113,7 @@ public class Pipes
 
         if (accelerationPossible())
         {
-            pipesSpeed += ACCELERATION_FACTOR; // accelerate pipes
-            requiredScoreForAcceleration *= 2; // double required score for acceleration
-            distanceBetweenPairOfPipes += ADDITIONAL_DISTANCE;
-        }
-    }
-
-
-    private boolean accelerationPossible()
-    {
-        return ScoreService.getPlayerScore() == requiredScoreForAcceleration;
-    }
-
-    public void reset()
-    {
-        bottomPipes.clear();
-        topPipes.clear();
-        pipesSpeed = INIT_PIPES_SPEED;
-        requiredScoreForAcceleration = INIT_REQUIRED_SCORE_FOR_ACCELERATION;
-        distanceBetweenPairOfPipes = INIT_DISTANCE_BETWEEN_PAIR_OF_PIPES;
-
-        for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS_PER_FRAME; i++)
-        {
-            addNewPair();
+            accelerate();
         }
     }
 
@@ -156,17 +127,11 @@ public class Pipes
         return topPipes.get(index);
     }
 
-
-    private void removeFrontPair()
+    public int getQuantityOfPairs()
     {
-        bottomPipes.remove(0);
-        topPipes.remove(0);
+        return QUANTITY_OF_PIPES_PAIRS_PER_FRAME;
     }
 
-    private boolean frontPairDisappeared()
-    {
-        return bottomPipes.size() > 0 && bottomPipes.get(0).x + bottomPipes.get(0).width < 0;
-    }
 
     private void move()
     {
@@ -178,9 +143,47 @@ public class Pipes
         }
     }
 
-    public int getQuantityOfPairs()
+    private boolean frontPairDisappeared()
     {
-        return QUANTITY_OF_PIPES_PAIRS_PER_FRAME;
+        return bottomPipes.size() > 0 && bottomPipes.get(0).x + bottomPipes.get(0).width < 0;
     }
 
+    private void addNewPair()
+    {
+        int boundHeight = MAXIMUM_BOTTOM_PIPE_HEIGHT - MINIMAL_BOTTOM_PIPE_HEIGHT;
+        int bottomPipeHeight = MINIMAL_BOTTOM_PIPE_HEIGHT + randomGenerator.nextInt(boundHeight);
+
+        int boundWidth = MAXIMUM_PIPE_WIDTH - MINIMAL_PIPE_WIDTH;
+        int pipeWidth = MINIMAL_PIPE_WIDTH + randomGenerator.nextInt(boundWidth);
+
+        int leftSideHorizontalCoordinate = (bottomPipes.isEmpty() && topPipes.isEmpty() ? FIRST_PAIR_OF_PIPES_X_POS :
+                                            bottomPipes.get(bottomPipes.size() - 1).x + distanceBetweenPairOfPipes);
+
+        bottomPipes.add(new Pipe(leftSideHorizontalCoordinate,
+                                 WindowSettings.HEIGHT - bottomPipeHeight - Ground.getGroundHeight(), pipeWidth,
+                                 bottomPipeHeight));
+
+        topPipes.add(new Pipe(leftSideHorizontalCoordinate,
+                              0, pipeWidth,
+                              WindowSettings.HEIGHT - bottomPipeHeight - Ground.getGroundHeight() - GAP_BETWEEN_PIPES));
+
+    }
+
+    private void removeFrontPair()
+    {
+        bottomPipes.remove(0);
+        topPipes.remove(0);
+    }
+
+    private boolean accelerationPossible()
+    {
+        return ScoreService.getPlayerScore() == requiredScoreForAcceleration;
+    }
+
+    private void accelerate()
+    {
+        pipesSpeed += ACCELERATION_FACTOR; // accelerate pipes
+        requiredScoreForAcceleration *= 2; // double required score for acceleration
+        distanceBetweenPairOfPipes += ADDITIONAL_DISTANCE;
+    }
 }

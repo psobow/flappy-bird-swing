@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import sobow.flappybirdgame.level.Pipes.Pipe;
 
 public class Bird extends Rectangle
 {
@@ -29,6 +28,14 @@ public class Bird extends Rectangle
         reset();
     }
 
+    public void reset()
+    {
+        dy = 0;
+        isCollided = false;
+        x = INIT_X_POS;
+        y = INIT_Y_POS;
+    }
+
     public static Bird getInstance()
     {
         if (instance == null)
@@ -48,23 +55,16 @@ public class Bird extends Rectangle
         }
     }
 
-    public void reset()
-    {
-        dy = 0;
-        isCollided = false;
-        x = INIT_X_POS;
-        y = INIT_Y_POS;
-    }
-
     public void paint(Graphics g)
     {
         g.setColor(isCollided ? AFTER_COLLISION : COLOR);
         g.fillRect(x, y, width, height);
     }
 
-    public boolean isBetweenHorizontally(Pipe pipe)
+    public void update()
     {
-        return x + width >= pipe.x && x <= pipe.x + pipe.width;
+        accelerateFall();
+        fall();
     }
 
     public void keyPressed(KeyEvent e)
@@ -76,61 +76,17 @@ public class Bird extends Rectangle
         }
     }
 
-    public void update()
-    {
-        accelerateFall();
-        fall();
-    }
-
-    public void resolveCollision(Pipes pipes)
-    {
-        resolveCollisionWithTopWallAndGround();
-        if (!isCollided)
-        {
-            resolveCollisionWithHalfOf(pipes);
-        }
-    }
-
     public boolean isCollided()
     {
         return isCollided;
     }
 
-
-    private void resolveCollisionWithTopWallAndGround()
+    public void setCollided(boolean collided)
     {
-        if (collisionWithTop() || collisionWithGround())
-        {
-            isCollided = true;
-        }
+        isCollided = collided;
     }
 
-    private boolean collisionWithGround()
-    {
-        return y + height >= Ground.getDistanceBetweenTopWallAndGround();
-    }
 
-    private boolean collisionWithTop()
-    {
-        return y <= 0;
-    }
-
-    private void resolveCollisionWithHalfOf(Pipes pipes)
-    {
-        for (int i = 0; i < pipes.getQuantityOfPairs() / 2; i++)
-        {
-            if (isBetweenHorizontally(pipes.getBottomPipeAt(i)) && !isBetweenVertically(pipes.getBottomPipeAt(i),
-                                                                                        pipes.getTopPipeAt(i)))
-            {
-                isCollided = true;
-            }
-        }
-    }
-
-    private boolean isBetweenVertically(Pipe bottomPipe, Pipe topPipe)
-    {
-        return y > topPipe.y + topPipe.height && y + height < bottomPipe.y;
-    }
 
     private void accelerateFall()
     {

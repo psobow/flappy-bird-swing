@@ -12,6 +12,8 @@ import sobow.flappybirdgame.level.Bird;
 import sobow.flappybirdgame.level.Ground;
 import sobow.flappybirdgame.level.Pipes;
 import sobow.flappybirdgame.level.TextMessages;
+import sobow.flappybirdgame.services.CollisionService;
+import sobow.flappybirdgame.services.ScoreService;
 
 public class BoardFlappyBird extends JPanel implements ActionListener
 {
@@ -59,17 +61,6 @@ public class BoardFlappyBird extends JPanel implements ActionListener
     }
 
     @Override
-    protected void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        revalidate();
-        ground.paint(g);
-        bird.paint(g);
-        pipes.paint(g);
-        textMessages.paint(g, timer.isRunning());
-    }
-
-    @Override
     public void actionPerformed(ActionEvent e)
     {
         ScoreService.examineBirdPositionBeforePipesUpdate();
@@ -82,7 +73,7 @@ public class BoardFlappyBird extends JPanel implements ActionListener
         }
 
         bird.update();
-        bird.resolveCollision(pipes);
+        CollisionService.resolveCollision();
 
         if (bird.isCollided())
         {
@@ -90,6 +81,17 @@ public class BoardFlappyBird extends JPanel implements ActionListener
             timer.stop();
         }
         repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        revalidate();
+        ground.paint(g);
+        bird.paint(g);
+        pipes.paint(g);
+        textMessages.paint(g, timer.isRunning());
     }
 
     private class MyKeyAdapter extends KeyAdapter

@@ -4,7 +4,7 @@ package sobow.flappybirdgame.level;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import sobow.flappybirdgame.game.ScoreService;
+import sobow.flappybirdgame.services.ScoreService;
 
 
 public class TextMessages

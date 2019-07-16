@@ -1,13 +1,8 @@
-package sobow.flappybirdgame.game;
+package sobow.flappybirdgame.services;
 
-import sobow.flappybirdgame.level.Bird;
-import sobow.flappybirdgame.level.Pipes;
 
 public class ScoreService
 {
-    private static Bird bird = Bird.getInstance();
-    private static Pipes pipes = Pipes.getInstance();
-
     private static int playerScore;
     private static int bestScore;
     private static boolean beforePipesUpdate;
@@ -18,12 +13,12 @@ public class ScoreService
 
     public static void examineBirdPositionBeforePipesUpdate()
     {
-        beforePipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
+        beforePipesUpdate = CollisionService.isBirdBetweenFrontPipesHorizontally();
     }
 
     public static void examineBirdPositionAfterPipesUpdate()
     {
-        afterPipesUpdate = bird.isBetweenHorizontally(pipes.getBottomPipeAt(0));
+        afterPipesUpdate = CollisionService.isBirdBetweenFrontPipesHorizontally();
     }
 
     public static boolean birdPassedFrontPipes()
