@@ -101,16 +101,16 @@ public class BoardFlappyBird extends JPanel implements ActionListener
         {
             boolean isTimerRunning = timer.isRunning();
             int key = e.getKeyCode();
-            if (isTimerRunning && !bird.isCollided())
+            if (isTimerRunning)
             {
                 bird.keyPressed(e);
             }
-            else if (!isTimerRunning && bird.isCollided() && key == KeyEvent.VK_ENTER)
+            else if (bird.isCollided() && key == KeyEvent.VK_ENTER)
             {
                 resetGame();
                 repaint();
             }
-            else if (!isTimerRunning && !bird.isCollided() && key == KeyEvent.VK_SPACE)
+            else if (!bird.isCollided() && key == KeyEvent.VK_SPACE)
             {
                 timer.start();
                 bird.keyPressed(e);

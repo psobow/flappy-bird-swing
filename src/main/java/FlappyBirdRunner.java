@@ -8,9 +8,3 @@ public class FlappyBirdRunner
         EventQueue.invokeLater(() -> new MainWindow());
     }
 }
-
-/*
-
-TODO: zaimplementować zwięszkaszenie się prędkości
-TODO: zaimplementować losowe szerokości rur
- */
