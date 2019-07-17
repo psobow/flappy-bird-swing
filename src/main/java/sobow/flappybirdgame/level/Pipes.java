@@ -53,6 +53,24 @@ public class Pipes
     private int distanceBetweenPairOfPipes;
     private int requiredScoreForAcceleration;
 
+    public static Pipes getInstance()
+    {
+        if (instance == null)
+        {
+            synchronized (Pipes.class)
+            {
+                if (instance == null)
+                {
+                    instance = new Pipes();
+                }
+            }
+        }
+        synchronized (Pipes.class)
+        {
+            return instance;
+        }
+    }
+
     private Pipes()
     {
         bottomPipes = new ArrayList<>();
@@ -72,24 +90,6 @@ public class Pipes
         for (int i = 0; i < QUANTITY_OF_PIPES_PAIRS_PER_FRAME; i++)
         {
             addNewPair();
-        }
-    }
-
-    public static Pipes getInstance()
-    {
-        if (instance == null)
-        {
-            synchronized (Pipes.class)
-            {
-                if (instance == null)
-                {
-                    instance = new Pipes();
-                }
-            }
-        }
-        synchronized (Pipes.class)
-        {
-            return instance;
         }
     }
 

@@ -22,20 +22,6 @@ public class Bird extends Rectangle
     private float dy; // derivative y axis coordinate
     private boolean isCollided;
 
-    private Bird()
-    {
-        super(INIT_X_POS, INIT_Y_POS, WIDTH, HEIGHT);
-        reset();
-    }
-
-    public void reset()
-    {
-        dy = 0;
-        isCollided = false;
-        x = INIT_X_POS;
-        y = INIT_Y_POS;
-    }
-
     public static Bird getInstance()
     {
         if (instance == null)
@@ -53,6 +39,20 @@ public class Bird extends Rectangle
         {
             return instance;
         }
+    }
+
+    private Bird()
+    {
+        super(INIT_X_POS, INIT_Y_POS, WIDTH, HEIGHT);
+        reset();
+    }
+
+    public void reset()
+    {
+        dy = 0;
+        isCollided = false;
+        x = INIT_X_POS;
+        y = INIT_Y_POS;
     }
 
     public void paint(Graphics g)

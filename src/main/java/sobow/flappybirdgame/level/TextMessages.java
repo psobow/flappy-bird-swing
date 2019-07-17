@@ -21,11 +21,6 @@ public class TextMessages
 
     private Bird bird;
 
-    private TextMessages()
-    {
-        bird = Bird.getInstance();
-    }
-
     public static TextMessages getInstance()
     {
         if (instance == null)
@@ -42,6 +37,11 @@ public class TextMessages
         {
             return instance;
         }
+    }
+
+    private TextMessages()
+    {
+        bird = Bird.getInstance();
     }
 
     public void paint(Graphics g, boolean isTimerRunning)

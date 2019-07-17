@@ -16,8 +16,6 @@ public class Ground extends Rectangle
 
     private static Ground instance;
 
-    private Ground() {}
-
     public static Ground getInstance()
     {
         if (instance == null)
@@ -35,6 +33,8 @@ public class Ground extends Rectangle
             return instance;
         }
     }
+
+    private Ground() {}
 
     public void paint(Graphics g)
     {
